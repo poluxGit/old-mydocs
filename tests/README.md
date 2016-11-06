@@ -1,0 +1,1 @@
+- Pour tester une API Restful [Lien](https://www.univ-orleans.fr/iut-orleans/informatique/intra/tuto/php/rest3.html)

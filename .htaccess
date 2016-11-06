@@ -1,0 +1,8 @@
+# Redirection needed for RESTFul API Service
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule api/v1/(.*)$ public/api.php?request=$1 [QSA,NC,L]
+    RewriteRule index.php public/index.php
+</IfModule>
