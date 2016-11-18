@@ -18,7 +18,6 @@ use MyGED\Core as Core;
  */
 class MetaDocument extends Core\AbstractDBObject
 {
-
     /**
      * Default Class Constructor - New MetaDocument
      */
