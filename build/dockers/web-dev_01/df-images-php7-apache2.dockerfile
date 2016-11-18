@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y --force-yes \
       tesseract-ocr \
       tesseract-ocr-fra \
       tesseract-ocr-eng \
+      poppler-utils \
       php-xdebug
 
 USER root
