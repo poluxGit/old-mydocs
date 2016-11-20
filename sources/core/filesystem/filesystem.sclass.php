@@ -27,17 +27,18 @@ use MyGED\Core\Exceptions as AppExceptions;
  *
  * @author polux
  */
-class FileSystem {
-   
+class FileSystem
+{
     /**
      * deleteDir
-     * 
+     *
      * Delete dir and all of these children
-     * 
+     *
      * @param string $dirPath Path to delete
      * @throws InvalidArgumentException
      */
-    public static function deleteDir($dirPath) {
+    public static function deleteDir($dirPath)
+    {
         if (! is_dir($dirPath)) {
             throw new InvalidArgumentException("$dirPath must be a directory");
         }
@@ -54,36 +55,33 @@ class FileSystem {
         }
         rmdir($dirPath);
     }
-    
+
     /**
      * Copy an element to another
-     * 
+     *
      * @param string    $pStrSource     Source file to copy.
      * @param string    $pStrTarget     Target file.
      * @throws AppExceptions\GenericException
      * @throws \Exception
      */
-    public static function filecopy($pStrSource,$pStrTarget)
+    public static function filecopy($pStrSource, $pStrTarget)
     {
-         try {
+        try {
             $lBoolResult = copy($pStrSource, $pStrTarget);
             //chmod($pStrTarget, 0777);
-            
-            if(!$lBoolResult)
-            {
-                throw new \Exception(sprintf("Error during file copy (from '%s' to '%s').",$pStrSource,$pStrTarget));
+
+            if (!$lBoolResult) {
+                throw new \Exception(sprintf("Error during file copy (from '%s' to '%s').", $pStrSource, $pStrTarget));
             }
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $lArrOptions = array('msg'=> $e->getMessage());
-            throw new AppExceptions\GenericException('FILE_COPY_ERR',$lArrOptions);
+            throw new AppExceptions\GenericException('FILE_COPY_ERR', $lArrOptions);
         }
     }
-    
+
     /**
      * Returns extension from filename
-     * 
+     *
      * @param string $pStrFilepath Filepath
      * @return string File extension
      */
@@ -91,6 +89,15 @@ class FileSystem {
     {
         return pathinfo($pStrFilepath, PATHINFO_EXTENSION);
     }
-    
-    
+
+    /**
+     * Return a temporay filename
+     *
+     * @param string $pStrFilepath Filepath
+     * @return string File extension
+     */
+    public static function getTempFilename($pStrTargetDir='/tmp', $pStrFilePrefix='tmp')
+    {
+        return tempnam($pStrTargetDir, $pStrFilePrefix);
+    }
 }
