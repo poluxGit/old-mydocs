@@ -14,7 +14,7 @@ use TesseractOCR;
  * @package MyGED
  * @subpackage OCR
  */
-class OCRAnalysis extends TesseractOCR
+class OCRAnalysis
 {
     /**
    * Input filepath
@@ -44,7 +44,7 @@ class OCRAnalysis extends TesseractOCR
    * Default Construtor
    *
    * @param string $pStrFilepath  Complete filepath to OCR-analyze
-   * @todo  Rajoputer gestion des extensions de fichier
+   * @todo  Rajouter gestion des extensions de fichier
    */
   public function __construct($pStrInputFilepath, $pStrOutputTextFile=null)
   {

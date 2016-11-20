@@ -21,7 +21,8 @@ use MyGED\Core\FileSystem\FileSystem as FileFS;
  * @package MyGED
  * @category CoreApplication
  */
-class Application {
+class Application
+{
 
     /**
      * JSON Filepath of Application Settings
@@ -63,39 +64,34 @@ class Application {
      * @link conf/mypp.settings.json
      * @return array Array of settings.
      */
-    private static function loadAppParamsFromJsonSettingFile(){
+    private static function loadAppParamsFromJsonSettingFile()
+    {
+        $lStrJson     = file_get_contents(self::$_sPathJSONSettingsFile);
+        $lArrSettings = json_decode($lStrJson, true);
 
-      $lStrJson     = file_get_contents(self::$_sPathJSONSettingsFile);
-      $lArrSettings = json_decode($lStrJson,true);
+        if (array_key_exists('db_path', $lArrSettings['settings'])) {
+            self::setAppParam('SQLITE_DB_FILEPATH', $lArrSettings['settings']['db_path']);
+        } else {
+            $lObjException = new ApplicationException('SETTINGS-01');
+        }
 
-      if(array_key_exists('db_path', $lArrSettings['settings'])){
-        self::setAppParam('SQLITE_DB_FILEPATH', $lArrSettings['settings']['db_path']);
-      }
-      else {
-        $lObjException = new ApplicationException('SETTINGS-01');
-      }
+        if (array_key_exists('vault_path', $lArrSettings['settings'])) {
+            self::setAppParam('VAULT_ROOT', $lArrSettings['settings']['vault_path']);
+        } else {
+            $lObjException = new ApplicationException('SETTINGS-02');
+        }
 
-      if(array_key_exists('vault_path', $lArrSettings['settings'])){
-        self::setAppParam('VAULT_ROOT', $lArrSettings['settings']['vault_path']);
-      }
-      else {
-        $lObjException = new ApplicationException('SETTINGS-02');
-      }
+        if (array_key_exists('vault_db', $lArrSettings['settings'])) {
+            self::setAppParam('VAULT_DB', $lArrSettings['settings']['vault_db']);
+        } else {
+            $lObjException = new ApplicationException('SETTINGS-03');
+        }
 
-      if(array_key_exists('vault_db', $lArrSettings['settings'])){
-        self::setAppParam('VAULT_DB', $lArrSettings['settings']['vault_db']);
-      }
-      else {
-        $lObjException = new ApplicationException('SETTINGS-03');
-      }
-
-      if(array_key_exists('templates_path', $lArrSettings['settings'])){
-        self::setAppParam('TEMPLATES_ROOT', $lArrSettings['settings']['templates_path']);
-      }
-      else {
-        $lObjException = new ApplicationException('SETTINGS-04');
-      }
-
+        if (array_key_exists('templates_path', $lArrSettings['settings'])) {
+            self::setAppParam('TEMPLATES_ROOT', $lArrSettings['settings']['templates_path']);
+        } else {
+            $lObjException = new ApplicationException('SETTINGS-04');
+        }
     }//end loadAppParamsFromJsonSettingFile()
 
     /**
@@ -121,17 +117,15 @@ class Application {
     {
         try {
             // Application DB file does not exists ?
-            if(!file_exists(self::getAppParam('SQLITE_DB_FILEPATH')))
-            {
+            if (!file_exists(self::getAppParam('SQLITE_DB_FILEPATH'))) {
                 // Recreate it from template!
                 static::resetApplicationDBFile();
             }
             $lObjPdoDB = \MyGED\Core\Database\DatabaseTools::getSQLitePDODbObj(self::getAppParam('SQLITE_DB_FILEPATH'));
             self::$_oMetaDatabase = $lObjPdoDB;
-
         } catch (\Exception $ex) {
             $lArrOptions = array('msg'=>"SQLite db DSN : '".$lStrDSN."'. ExMsg : ".$ex->getMessage());
-            throw new ApplicationException\GenericException('PDO_CONNECTION_FAILED',$lArrOptions);
+            throw new ApplicationException\GenericException('PDO_CONNECTION_FAILED', $lArrOptions);
         }
     }
 
@@ -143,7 +137,7 @@ class Application {
     public static function initVault($pBCreateIfNeeded = false)
     {
         $lStrVaultFilePath = self::getAppParam('VAULT_ROOT');
-        VaultApplication\Vault::loadVault($lStrVaultFilePath,$pBCreateIfNeeded);
+        VaultApplication\Vault::loadVault($lStrVaultFilePath, $pBCreateIfNeeded);
     }
 
     /**
@@ -157,8 +151,7 @@ class Application {
     public static function getAppParam($pStrParamIdx)
     {
         $lMixedResult = null;
-        if(array_key_exists($pStrParamIdx, self::$_aParams))
-        {
+        if (array_key_exists($pStrParamIdx, self::$_aParams)) {
             $lMixedResult =  self::$_aParams[$pStrParamIdx];
         }
 
@@ -173,7 +166,7 @@ class Application {
      * @param string $pStrParamIdx Parameter Id
      * @param mixed  $pMixedValue  Value to define
      */
-    public static function setAppParam($pStrParamIdx,$pMixedValue)
+    public static function setAppParam($pStrParamIdx, $pMixedValue)
     {
         self::$_aParams[$pStrParamIdx] = $pMixedValue;
     }
@@ -206,16 +199,21 @@ class Application {
      */
     public static function resetApplicationDBFile()
     {
-         try {
+        try {
             $lStrRoot = static::getTemplateAppDbFilePath();
             $lStrDest = static::getAppDbFilePath();
 
             FileFS::filecopy($lStrRoot, $lStrDest);
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $lArrOptions = array('msg'=> $e->getMessage());
-            throw new ApplicationException\GenericException('INIT_APP_DB_FAILED',$lArrOptions);
+            throw new ApplicationException\GenericException('INIT_APP_DB_FAILED', $lArrOptions);
         }
+    }
+
+    /**
+     * Return a temporary filename
+     */
+    public static function getTemporaryFilename()
+    {
     }
 }

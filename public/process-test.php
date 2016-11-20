@@ -12,42 +12,39 @@
  */
 
 // Ouverture session HTTP pour stockage des process en cours
-session_start();
+//session_start();
 
-if(!array_key_exists('PID',$_SESSION) || (array_key_exists('PID',$_SESSION) && empty($_SESSION['PID'])) )
-{
-  // duplication du processus -> un fils et un père
-  $pid = pcntl_fork();
-  $_SESSION['PID'] = $pid;
+require __DIR__.'/../vendor/autoload.php';
+require __DIR__.'/../sources/core/filesystem/pdfhandler.class.php';
+require __DIR__.'/../sources/core/application.class.php';
 
-  //Err
-  if($pid == -1)
-  {
-    echo "Erreur duplication processus";
-  }
-  else if ($pid) // <> 0
-  {
-    # Father
-    $_SESSION['PID'] = $pid;
-    echo "Init father :".$pid;
-  }
-  else {
-    # Child
+use MyGED\Core\FileSystem\PDFHandler as PDFHandler;
+use MyGED\Core\Application as Application;
 
-    for($i=0;$i<10;$i++)
-    {
-      // 10 secondes
-      sleep(1);
-    }
-    $_SESSION['PID'] = null;
-    return 0;
-  }
-}
-else {
-  $lStatus = '';
-  echo "Processus fils non fini! PID:".$_SESSION['PID'];
-  pcntl_waitpid($_SESSION['PID'],$lStatus);
-  echo "Retour fils : ".$lStatus;
-}
+Application::initApplication();
 
-?>
+$lObjPDF = new PDFHandler('./test.pdf');
+echo "Pages Count : ".strval($lObjPDF->getPagesCount());
+$lArrMeta = $lObjPDF->getAllMetaValues();
+
+echo "<br>"."Meta Data";
+
+echo "<pre>";
+print_r($lArrMeta);
+echo "</pre>";
+
+echo "Files splitted";
+$lArrFiles = PDFHandler::splitPDFPageByPage('./test.pdf');
+
+echo "<pre>";
+print_r($lArrFiles);
+echo "</pre>";
+
+echo "OCR Content";
+$lArrOCR = PDFHandler::launchOCRAnalysis('./test.pdf');
+
+echo "<pre>";
+print_r($lArrOCR);
+echo "</pre>";
+
+exit;
