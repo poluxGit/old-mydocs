@@ -12,7 +12,8 @@ namespace MyGED\Exceptions;
 /**
  * ApplicationException Exception Class Definition
  */
-class ApplicationException extends \Exception {
+class ApplicationException extends \Exception
+{
 
     /**
      * Exception Code
@@ -38,14 +39,13 @@ class ApplicationException extends \Exception {
      *
      * @return \MyGED\Core\Exceptions\ApplicationException
      */
-    function __construct($pStrCodeException,$pArrParameters=null) {
-
-          if(!is_null($pArrParameters) && array_key_exists('msg',$pArrParameters)) {
+    public function __construct($pStrCodeException, $pArrParameters=null)
+    {
+        if (!is_null($pArrParameters) && array_key_exists('msg', $pArrParameters)) {
             $lStrMessage = $pArrParameters['msg'];
-        }
-        else {
+        } else {
             $lStrMessage = "Message not defined!";
-         }
+        }
 
         parent::__construct($pStrCodeException." - ".$lStrMessage);
 
@@ -58,7 +58,7 @@ class ApplicationException extends \Exception {
      *
      * @return string
      */
-    function getAppCodeException()
+    public function getAppCodeException()
     {
         return $this->_sCodeException;
     }
@@ -68,11 +68,10 @@ class ApplicationException extends \Exception {
      *
      * @return array(mixed)
      */
-    function getParametersException()
+    public function getParametersException()
     {
         return $this->_sExceptionParameters;
     }
 
     //@TODO Gestion dictionnaire de message d'erreur
-
 }

@@ -12,10 +12,10 @@ namespace MyGED\Exceptions;
  * GenericException Exception Class Definition
  *
  */
-class GenericException extends ApplicationException {
-
-    function __construct($pStrCodeException,$pArrParameters=null) {
-        parent::__construct($pStrCodeException,$pArrParameters);
+class GenericException extends ApplicationException
+{
+    public function __construct($pStrCodeException, $pArrParameters=null)
+    {
+        parent::__construct($pStrCodeException, $pArrParameters);
     }
-
 }
