@@ -12,6 +12,11 @@ services:
       - ../data/app_vault:/var/www/vault/
       - ./logs/apache:/var/log/apache2/
       - ./logs/php:/var/log/php/
+  db-mysql:
+    image: polux/db-mysql:dev
+    container_name: db-mysql-01
+    networks:
+        - internal
 
   php-ci:
     image: polux/web-ci:dev

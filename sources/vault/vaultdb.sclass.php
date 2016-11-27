@@ -18,7 +18,8 @@ use MyGED\Core\Exceptions as AppExceptions;
  *
  * Class managing storing solution.
  */
-class VaultDb {
+class VaultDb
+{
 
     /**
      * Add a new file into database
@@ -29,10 +30,9 @@ class VaultDb {
      *
      * @return boolean
      */
-    public static function insertNewFile($pStrUniqueId,$pStrSourceFilename,$pStrTargetFilename,$pStrFileMime='')
+    public static function insertNewFile($pStrUniqueId, $pStrSourceFilename, $pStrTargetFilename, $pStrFileMime='')
     {
         try {
-
             $lObjDb = Vault::getPDOVaultDBObject();
 
             $lStrSQLQuery = sprintf(
@@ -46,11 +46,9 @@ class VaultDb {
 
             $lObjDb->query($lStrSQLQuery);
             $lObjDb->lastInsertId();
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $lArrOptions = array('msg'=> 'Error during adding a new document into DB => '.$e->getMessage());
-            throw new AppExceptions\GenericException('VAULT_DB_ADD_DOC_FAILED',$lArrOptions);
+            throw new AppExceptions\GenericException('VAULT_DB_ADD_DOC_FAILED', $lArrOptions);
         }
         return $lObjDb->lastInsertId();
     }
@@ -67,7 +65,6 @@ class VaultDb {
     public static function deleteFile($pStrUniqueId)
     {
         try {
-
             $lObjDb = Vault::getPDOVaultDBObject();
 
             $lStrSQLQueryDelFiles = sprintf(
@@ -76,11 +73,9 @@ class VaultDb {
             );
 
             $lObjDb->query($lStrSQLQueryDelFiles);
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $lArrOptions = array('msg'=> 'Error during adding a new document into DB => '.$e->getMessage());
-            throw new AppExceptions\GenericException('VAULT_DB_ADD_DOC_FAILED',$lArrOptions);
+            throw new AppExceptions\GenericException('VAULT_DB_ADD_DOC_FAILED', $lArrOptions);
         }
         return true;
     }
@@ -96,25 +91,21 @@ class VaultDb {
     {
         $lStrResult = null;
         try {
-
             $lObjDb = Vault::getPDOVaultDBObject();
             $lStrSQLQuerySelFiles = sprintf(
                     "SELECT file_id,file_path,file_originalname FROM vault_files WHERE file_id='%s'",
                     $pStrUniqueId
             );
 
-            $lObjStat = $lObjDb->query($lStrSQLQuerySelFiles,\PDO::FETCH_BOTH);
+            $lObjStat = $lObjDb->query($lStrSQLQuerySelFiles, \PDO::FETCH_BOTH);
             $lArrDataAllRows = $lObjStat->fetchAll();
 
-            if(count($lArrDataAllRows) === 1)
-            {
+            if (count($lArrDataAllRows) === 1) {
                 $lStrResult = $lArrDataAllRows[0]['file_path'];
             }
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $lArrOptions = array('msg'=> 'Error during adding a new document into DB => '.$e->getMessage());
-            throw new AppExceptions\GenericException('VAULT_DB_ADD_DOC_FAILED',$lArrOptions);
+            throw new AppExceptions\GenericException('VAULT_DB_ADD_DOC_FAILED', $lArrOptions);
         }
         return $lStrResult;
     }
@@ -130,7 +121,6 @@ class VaultDb {
     {
         $lStrResult = null;
         try {
-
             $lObjDb = Vault::getPDOVaultDBObject();
 
             $lStrSQLQuerySelFiles = sprintf(
@@ -138,18 +128,15 @@ class VaultDb {
                     $pStrUniqueId
             );
 
-            $lObjStat = $lObjDb->query($lStrSQLQuerySelFiles,\PDO::FETCH_BOTH);
+            $lObjStat = $lObjDb->query($lStrSQLQuerySelFiles, \PDO::FETCH_BOTH);
             $lArrDataAllRows = $lObjStat->fetchAll();
 
-            if(count($lArrDataAllRows) === 1)
-            {
+            if (count($lArrDataAllRows) === 1) {
                 $lStrResult = $lArrDataAllRows[0]['file_originalname'];
             }
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $lArrOptions = array('msg'=> 'Error during adding a new document into DB => '.$e->getMessage());
-            throw new AppExceptions\GenericException('VAULT_DB_ADD_DOC_FAILED',$lArrOptions);
+            throw new AppExceptions\GenericException('VAULT_DB_ADD_DOC_FAILED', $lArrOptions);
         }
         return $lStrResult;
     }
@@ -165,7 +152,6 @@ class VaultDb {
     {
         $lStrResult = null;
         try {
-
             $lObjDb = Vault::getPDOVaultDBObject();
 
             $lStrSQLQuerySelFiles = sprintf(
@@ -173,18 +159,15 @@ class VaultDb {
                     $pStrUniqueId
             );
 
-            $lObjStat = $lObjDb->query($lStrSQLQuerySelFiles,\PDO::FETCH_BOTH);
+            $lObjStat = $lObjDb->query($lStrSQLQuerySelFiles, \PDO::FETCH_BOTH);
             $lArrDataAllRows = $lObjStat->fetchAll();
 
-            if(count($lArrDataAllRows) === 1)
-            {
+            if (count($lArrDataAllRows) === 1) {
                 $lStrResult = $lArrDataAllRows[0]['file_mime'];
             }
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $lArrOptions = array('msg'=> 'Error during getting an information about a file into DB => '.$e->getMessage());
-            throw new AppExceptions\GenericException('VAULT_DB_GET_FILEMETA_FAILED',$lArrOptions);
+            throw new AppExceptions\GenericException('VAULT_DB_GET_FILEMETA_FAILED', $lArrOptions);
         }
         return $lStrResult;
     }//end getFileMimeType()
@@ -199,26 +182,20 @@ class VaultDb {
     {
         $lArrResult = null;
         try {
-
             $lObjDb = Vault::getPDOVaultDBObject();
 
             $lStrSQLQuerySelFiles = "SELECT * FROM vault_files";
 
-            $lObjStat = $lObjDb->query($lStrSQLQuerySelFiles,\PDO::FETCH_ASSOC);
+            $lObjStat = $lObjDb->query($lStrSQLQuerySelFiles, \PDO::FETCH_ASSOC);
             $lArrDataAllRows = $lObjStat->fetchAll();
 
-            if(count($lArrDataAllRows) !== 0)
-            {
+            if (count($lArrDataAllRows) !== 0) {
                 $lArrResult = $lArrDataAllRows;
             }
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $lArrOptions = array('msg'=> 'Error during getting an information about a file into DB => '.$e->getMessage());
-            throw new AppExceptions\GenericException('VAULT_DB_GET_FILEMETA_FAILED',$lArrOptions);
+            throw new AppExceptions\GenericException('VAULT_DB_GET_FILEMETA_FAILED', $lArrOptions);
         }
         return $lArrResult;
     }//end getAllFiles()
-
-
 }//End class

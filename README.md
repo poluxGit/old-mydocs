@@ -1,4 +1,4 @@
-**text**## MyDocs - My Personal documents management
+## MyDocs - My Personal documents management
 
 ```
 Personal documents management & storage application
@@ -6,9 +6,17 @@ Personal documents management & storage application
 
 ### All Functionnalities
 
-- OCR File analysis
+- OCR File analysis .. .done!
 - Store File and get contents easyly
 - Manage file and set meta of document/files
+
+
+### Application roadmap
+
+|Version|Functionnality|Release Date|Description|
+|:----------:|:---|:---:|:----:|
+|alpha-01|OCR File analysis |None|OCR Analysis => Tesseract.|
+|alpha-02|OCR File analysis integrated |None|OCR Analysis => Tesseract.|
 
 
 ###  Technical information

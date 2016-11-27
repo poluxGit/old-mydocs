@@ -196,7 +196,7 @@ class PDFHandler
             while ($lIntCpt<=$lIntPagecount) {
                 $lStrTemp = Fs::getTempFilename();
                 $lStrCodeRetour = $lObjPDFFile->_splitPDFbyPage($lStrTemp, $lIntCpt, $lIntCpt);
-                if (intval($lStrCodeRetour) ===0) {
+                if (intval($lStrCodeRetour) === 0) {
                     array_push($lArrPDFFiles, $lStrTemp);
                 }
                 $lIntCpt++;
@@ -229,11 +229,8 @@ class PDFHandler
             $lArrPDFFileToAnalyze = self::splitPDFPageByPage($pStrInputPDFFilepath);
             $lArrResult = array();
             foreach ($lArrPDFFileToAnalyze as $lStrKey => $lStrFilepath) {
-                echo "<br>avant conversion $lStrFilepath<br>";
                 $lStrCmd = "convert -density 300 -trim $lStrFilepath -quality 100 $lStrFilepath.png";
-
                 exec($lStrCmd, $lArrOutpuCmd, $lIntRetVal);
-                echo "apres conversion $lStrFilepath $lIntRetVal<br>";
                 if ($lIntRetVal===0) {
                     $lObjOCR = new TesseractOCR("$lStrFilepath.png");
                     $lObjOCR->lang('fra');

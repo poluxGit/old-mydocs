@@ -16,10 +16,9 @@ class EngineFactory
     /**
    * Workers in progress
    *
-   * @var array(Thread)
+   * @var array(pid)
    */
   private static $_arrWorkers = [];
-
 
 
   /**

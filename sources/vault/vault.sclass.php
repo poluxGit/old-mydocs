@@ -20,8 +20,8 @@ use MyGED\Application as App;
  *
  * Class managing storing solution.
  */
-class Vault {
-
+class Vault
+{
     /**
      * Vault Root Path
      *
@@ -72,30 +72,23 @@ class Vault {
     public static function loadVault($pStrVaultPath, $pBoolReset=false)
     {
         self::setVaultPath($pStrVaultPath);
+
         // Check Filesystem !
-        if(!VaultFs::isValidVault($pStrVaultPath))
-        {
-            if(!$pBoolReset)
-            {
-                $lArrOptions = array('msg'=> sprintf('Vault is not valid (path: %s)',$pStrVaultPath));
-                throw new AppExceptions\GenericException('LOAD_VAULT_CHECKFS',$lArrOptions);
-            }
-            else
-            {
+        if (!VaultFs::isValidVault($pStrVaultPath)) {
+            if (!$pBoolReset) {
+                $lArrOptions = array('msg'=> sprintf('Vault is not valid (path: %s)', $pStrVaultPath));
+                throw new AppExceptions\GenericException('LOAD_VAULT_CHECKFS', $lArrOptions);
+            } else {
                 VaultFs::repairVaultDirectoriesAndFiles();
             }
         }
 
         // Check Database !
-        if(!file_exists(self::getDatabaseFilePath()))
-        {
-            if(!$pBoolReset)
-            {
-                $lArrOptions = array('msg'=> sprintf('VaultDb is not valid (path: %s)',self::getDatabaseFilePath()));
-                throw new AppExceptions\GenericException('LOAD_VAULT_CHECKDB',$lArrOptions);
-            }
-            else
-            {
+        if (!file_exists(self::getDatabaseFilePath())) {
+            if (!$pBoolReset) {
+                $lArrOptions = array('msg'=> sprintf('VaultDb is not valid (path: %s)', self::getDatabaseFilePath()));
+                throw new AppExceptions\GenericException('LOAD_VAULT_CHECKDB', $lArrOptions);
+            } else {
                 self::setVaultPath($pStrVaultPath);
                 VaultFs::repairVaultDirectoriesAndFiles();
             }
@@ -113,7 +106,7 @@ class Vault {
      */
     public static function generateUniqueID($pStrPrefix='doc-')
     {
-       return uniqid($pStrPrefix);
+        return uniqid($pStrPrefix);
     }
 
     /**
@@ -163,20 +156,17 @@ class Vault {
         return self::$_sVaultPath;
     }
 
-    public static function storeFromContent($pMixedContent,$pStrOriginalFilename='',$pStrFileTypeMime='')
+    public static function storeFromContent($pMixedContent, $pStrOriginalFilename='', $pStrFileTypeMime='')
     {
         $lStrUniqueIdDoc = self::generateUniqueID('fic-');
 
         try {
-
-            $lStrExtensionFile = substr($pStrOriginalFilename,stripos($pStrOriginalFilename,'.')+1);
-            $lStrFilePath = VaultFs::storeFileContent($lStrUniqueIdDoc, $pMixedContent,$lStrExtensionFile);
-            VaultDb::insertNewFile($lStrUniqueIdDoc, basename($pStrOriginalFilename), $lStrFilePath,$pStrFileTypeMime);
-        }
-        catch(\Exception $ex)
-        {
-            $lArrOptions = array('msg'=> sprintf('Error saving a file into the Vault (filepath to store: %s) | Error : %s',$lStrFilePath,$ex->getMessage()));
-            throw new AppExceptions\GenericException('LOAD_VAULT_CHECKDB',$lArrOptions);
+            $lStrExtensionFile = substr($pStrOriginalFilename, stripos($pStrOriginalFilename, '.')+1);
+            $lStrFilePath = VaultFs::storeFileContent($lStrUniqueIdDoc, $pMixedContent, $lStrExtensionFile);
+            VaultDb::insertNewFile($lStrUniqueIdDoc, basename($pStrOriginalFilename), $lStrFilePath, $pStrFileTypeMime);
+        } catch (\Exception $ex) {
+            $lArrOptions = array('msg'=> sprintf('Error saving a file into the Vault (filepath to store: %s) | Error : %s', $lStrFilePath, $ex->getMessage()));
+            throw new AppExceptions\GenericException('LOAD_VAULT_CHECKDB', $lArrOptions);
         }
         return $lStrUniqueIdDoc;
     }
@@ -195,11 +185,9 @@ class Vault {
         try {
             $lStrFilePath = VaultFs::storeFromFilepath($lStrUniqueIdDoc, $pStrFilePath);
             VaultDb::insertNewFile($lStrUniqueIdDoc, basename($pStrFilePath), $lStrFilePath);
-        }
-        catch(\Exception $ex)
-        {
-            $lArrOptions = array('msg'=> sprintf('Error saving a file into the Vault (filepath to store: %s) | Error : %s',$pStrFilePath,$ex->getMessage()));
-            throw new AppExceptions\GenericException('LOAD_VAULT_CHECKDB',$lArrOptions);
+        } catch (\Exception $ex) {
+            $lArrOptions = array('msg'=> sprintf('Error saving a file into the Vault (filepath to store: %s) | Error : %s', $pStrFilePath, $ex->getMessage()));
+            throw new AppExceptions\GenericException('LOAD_VAULT_CHECKDB', $lArrOptions);
         }
         return $lStrUniqueIdDoc;
     }
@@ -213,8 +201,7 @@ class Vault {
      */
     public static function getPDOVaultDBObject()
     {
-        if(is_null(self::$_oPdoVaultDB) || !(self::$_oPdoVaultDB instanceof \PDO))
-        {
+        if (is_null(self::$_oPdoVaultDB) || !(self::$_oPdoVaultDB instanceof \PDO)) {
             self::$_oPdoVaultDB = AppDb\DatabaseTools::getSQLitePDODbObj(self::getDatabaseFilePath());
         }
         return self::$_oPdoVaultDB;

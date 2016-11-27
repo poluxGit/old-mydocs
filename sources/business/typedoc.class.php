@@ -16,13 +16,15 @@ use MyGED\Core as Core;
  *
  * Defintion of a TypeDocument
  */
-class TypeDocument extends Core\AbstractDBObject {
+class TypeDocument extends Core\AbstractDBObject
+{
 
     /**
      * Default Class Constructor - New TypeDocument
      */
-    public function __construct($pStrUid=null) {
-        parent::__construct($pStrUid,App::getAppDabaseObject());
+    public function __construct($pStrUid=null)
+    {
+        parent::__construct($pStrUid, App::getAppDabaseObject());
     }//end __construct()
 
     /**
@@ -68,7 +70,7 @@ class TypeDocument extends Core\AbstractDBObject {
     /**
      * Returns all records about your class
      *
-     * @param string $pStrWhereCondition Filtering Condition (without WHERE)    
+     * @param string $pStrWhereCondition Filtering Condition (without WHERE)
      * @return array(mixed)
      */
     public static function getAllClassItemsData($pStrWhereCondition=null)
@@ -91,5 +93,4 @@ class TypeDocument extends Core\AbstractDBObject {
     {
         return MetaTypeDocument::getAllItemsDataFromTypeDocument($this->getId());
     }
-
 }//end class

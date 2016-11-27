@@ -82,13 +82,6 @@ class Document extends Core\AbstractDBObject
     public function store()
     {
         parent::storeDataToDB(App::getAppDabaseObject());
-
-        // $lStrDocID = $this->getId();
-        // print_r('ID3:'.$lStrDocID);
-        // $this->initializeMetadataFromTypeDoc();
-        // $lStrDocID = $this->getId();
-        // print_r('ID3:'.$lStrDocID);
-        // print_r('Fin ID3');
     }//end store()
 
      /**
