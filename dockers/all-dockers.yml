@@ -13,6 +13,15 @@ services:
       - ./logs/apache:/var/log/apache2/
       - ./logs/php:/var/log/php/
 
+  db-mysql:
+    image: polux/db-mysql:dev
+    container_name: db-mysql-01
+    environment:
+      - MYSQL_ROOT_PASSWORD=test
+      - MYSQL_ROOT_HOST=172.18.0.1
+    networks:
+      - internal
+
   php-ci:
     image: polux/web-ci:dev
     container_name: web-ci-01

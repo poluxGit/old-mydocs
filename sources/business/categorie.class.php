@@ -8,15 +8,16 @@
  */
 namespace MyGED\Business;
 
-use MyGED\Application\App as App;
+use MyGED\Application\Application as App;
 use MyGED\Core as Core;
+use MyGED\Core\Database\AbstractDBObject;
 
 /**
  * Categorie Class
  *
  * Defintion of a Categorie
  */
-class Categorie extends Core\AbstractDBObject
+class Categorie extends AbstractDBObject
 {
 
     /**

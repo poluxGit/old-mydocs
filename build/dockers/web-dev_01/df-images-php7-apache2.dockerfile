@@ -3,6 +3,7 @@ FROM ubuntu:16.04
 
 MAINTAINER Polux <polux@poluxfr.org>
 
+
 # Modules installation
 RUN apt-get update && apt-get install -y --force-yes \
       vim \
@@ -25,7 +26,13 @@ RUN apt-get update && apt-get install -y --force-yes \
       tesseract-ocr \
       tesseract-ocr-fra \
       tesseract-ocr-eng \
-      php-xdebug
+      poppler-utils \
+      php-xdebug \
+      imagemagick
+
+
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get -q -y install mysql-server-5.7
 
 USER root
 
@@ -47,6 +54,7 @@ COPY ./02-000-default.conf /etc/apache2/sites-available/000-default.conf
 
 RUN a2enmod rewrite
 
-EXPOSE 9000 80
+EXPOSE 9000 80 3306 33060
 
+ENTRYPOINT ["mysqld"]
 ENTRYPOINT ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]

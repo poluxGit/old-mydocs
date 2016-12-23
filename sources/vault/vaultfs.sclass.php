@@ -14,12 +14,17 @@ namespace MyGED\Vault;
 use MyGED\Core\Exceptions as AppExceptions;
 use MyGED\Core\FileSystem\FileSystem as FileFS;
 
+use MyGED\Exceptions\GenericException;
+
+use MyGED\Vault\Vault;
+
 /**
  * VaulFs Class Definition
  *
  * Class managing Filesystem storage.
  */
-class VaultFs {
+class VaultFs
+{
 
     /**
      * Mandatory folders for Vault internal deployment
@@ -71,11 +76,9 @@ class VaultFs {
             $lStrDest = Vault::getDatabaseFilePath();
 
             FileFS::filecopy($lStrRoot, $lStrDest);
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $lArrOptions = array('msg'=> $e->getMessage());
-            throw new AppExceptions\GenericException('INIT_VAULT_DB_FAILED',$lArrOptions);
+            throw new AppExceptions\GenericException('INIT_VAULT_DB_FAILED', $lArrOptions);
         }
     }//end resetVaultDBFile()
 
@@ -86,8 +89,7 @@ class VaultFs {
     public static function repairVaultDirectoriesAndFiles()
     {
         $lStrVaultRootDir = Vault::getVaultRootDir();
-        if(!VaultFs::isValidVault($lStrVaultRootDir))
-        {
+        if (!VaultFs::isValidVault($lStrVaultRootDir)) {
             VaultFS::repairVaultDirectories($lStrVaultRootDir);
             VaultFs::repairVaultFiles();
         }
@@ -103,16 +105,14 @@ class VaultFs {
     protected static function checkVaultDirectories($pStrVaultPathToCheck=null)
     {
         $lStrVaultPathToCheck = $pStrVaultPathToCheck;
-        if(is_null($pStrVaultPathToCheck))
-        {
+        if (is_null($pStrVaultPathToCheck)) {
             $lStrVaultPathToCheck = Vault::getVaultRootDir();
         }
 
         // Check if mandatory dirs exists and reachable ?
-        foreach( VaultFs::$_aMandatoryDirectories as $lStrDirPath)
-        {
-            try{
-                VaultFs::checkIfPathIsReachable($lStrVaultPathToCheck.$lStrDirPath,true);
+        foreach (VaultFs::$_aMandatoryDirectories as $lStrDirPath) {
+            try {
+                VaultFs::checkIfPathIsReachable($lStrVaultPathToCheck.$lStrDirPath, true);
             } catch (AppExceptions\GenericException $ex) {
                 return $lStrVaultPathToCheck.$lStrDirPath;
             }
@@ -124,25 +124,22 @@ class VaultFs {
      /**
      * Checking Vault configuration files validity.
      *
-     * @param type $pStrVaultPathToCheck
+     * @param string $pStrVaultPathToCheck  Path to check
      *
      * @return boolean TRUE if ok - File which is missing instead
      */
     protected static function checkVaultConfigFiles($pStrVaultPathToCheck=null)
     {
         $lStrVaultPathToCheck = $pStrVaultPathToCheck;
-        if(is_null($pStrVaultPathToCheck))
-        {
+        if (is_null($pStrVaultPathToCheck)) {
             $lStrVaultPathToCheck = Vault::getVaultRootDir();
         }
 
         // Check if mandatory dirs exists and reachable ?
-        foreach( VaultFs::$_aMandatoryFiles as $lStrDirPath)
-        {
-           if(!file_exists($lStrVaultPathToCheck.$lStrDirPath))
-           {
-               return $lStrVaultPathToCheck.$lStrDirPath;
-           }
+        foreach (VaultFs::$_aMandatoryFiles as $lStrDirPath) {
+            if (!file_exists($lStrVaultPathToCheck.$lStrDirPath)) {
+                return $lStrVaultPathToCheck.$lStrDirPath;
+            }
         }
 
         return true;
@@ -158,23 +155,18 @@ class VaultFs {
     protected static function repairVaultDirectories($pStrVaultRootPath=null)
     {
         $lStrVaultPathToCheck = $pStrVaultRootPath;
-        if(is_null($pStrVaultRootPath))
-        {
+        if (is_null($pStrVaultRootPath)) {
             $lStrVaultPathToCheck = Vault::getVaultRootDir();
         }
 
         $liCpt = 0;
 
         $lBoolContinue = true;
-        while($lBoolContinue === true && $liCpt <= count(VaultFs::$_aMandatoryDirectories))
-        {
+        while ($lBoolContinue === true && $liCpt <= count(VaultFs::$_aMandatoryDirectories)) {
             $lStrDirToCreate = VaultFs::checkVaultDirectories($pStrVaultRootPath);
-            if(!is_bool($lStrDirToCreate))
-            {
-                mkdir($lStrDirToCreate,0777,true);
-            }
-            else
-            {
+            if (!is_bool($lStrDirToCreate)) {
+                mkdir($lStrDirToCreate, 0777, true);
+            } else {
                 $lBoolContinue = false;
             }
             $liCpt++;
@@ -208,23 +200,22 @@ class VaultFs {
      *
      * @return boolean Storage OK ?
      */
-    public static function storeFileContent($pStrIdObject,$pMixedContent,$pStrFileExtension)
+    public static function storeFileContent($pStrIdObject, $pMixedContent, $pStrFileExtension)
     {
         $lStrOutFilepath = Vault::getVaultRootDir().'/files/'.$pStrIdObject.'.'.$pStrFileExtension;
 
         // Target file exists ?
-        if(file_exists($lStrOutFilepath))
-        {
+        if (file_exists($lStrOutFilepath)) {
             $lArrOptions = array('msg'=> 'Error during check before storage of a file into Vault => targetfile already exists : '.$lStrOutFilepath);
-            throw new AppExceptions\GenericException('VAULT_FS_STORE_TARGETFILE_EXISTS',$lArrOptions);
+            throw new AppExceptions\GenericException('VAULT_FS_STORE_TARGETFILE_EXISTS', $lArrOptions);
         }
 
         // Store content into new file into Vault filesystem
         try {
-            file_put_contents($lStrOutFilepath,$pMixedContent);
+            file_put_contents($lStrOutFilepath, $pMixedContent);
         } catch (\Exception $ex) {
-            $lArrOptions = array('msg'=> sprintf('Error during storage content of a file into Vault. (target file : "%s") - Error : %s ',$lStrOutFilepath,$ex->getMessage()));
-            throw new AppExceptions\GenericException('VAULT_FS_STORE_CONTENT',$lArrOptions);
+            $lArrOptions = array('msg'=> sprintf('Error during storage content of a file into Vault. (target file : "%s") - Error : %s ', $lStrOutFilepath, $ex->getMessage()));
+            throw new AppExceptions\GenericException('VAULT_FS_STORE_CONTENT', $lArrOptions);
         }
 
         return $lStrOutFilepath;
@@ -242,13 +233,12 @@ class VaultFs {
      *
      * @return string Filepath of storage
      */
-    public static function storeFromFilepath($pStrIdObject,$pStrFilePath)
+    public static function storeFromFilepath($pStrIdObject, $pStrFilePath)
     {
         // Source file ok ?
-        if(empty($pStrFilePath) || !file_exists($pStrFilePath))
-        {
+        if (empty($pStrFilePath) || !file_exists($pStrFilePath)) {
             $lArrOptions = array('msg'=> 'Error during storing a new file into Vault => source file not reacheable : '.$pStrFilePath);
-            throw new AppExceptions\GenericException('VAULT_FS_STORE_SOURCEFILE_NOK',$lArrOptions);
+            throw new AppExceptions\GenericException('VAULT_FS_STORE_SOURCEFILE_NOK', $lArrOptions);
         }
         $lArrPathInfo    = pathinfo($pStrFilePath);
         $lStrUniqueIdDoc = $pStrIdObject;
@@ -256,19 +246,55 @@ class VaultFs {
 
         // Copy file !
         try {
-            $lStrRoot = $pStrFilePath;$lStrDest = Vault::getVaultRootDir().'/files/'.$lStrNewDocName;
+            $lStrRoot = $pStrFilePath;
+            $lStrDest = Vault::getVaultRootDir().'/files/'.$lStrNewDocName;
             $lBoolResult = copy($lStrRoot, $lStrDest);
-            if(!$lBoolResult)
-            {
-                throw new \Exception(sprintf("Error during storing a new file into Vault (copying source to vault): source: %s => target: %s.",$lStrRoot,$lStrDest));
+            if (!$lBoolResult) {
+                throw new \Exception(sprintf("Error during storing a new file into Vault (copying source to vault): source: %s => target: %s.", $lStrRoot, $lStrDest));
             }
-
         } catch (\Exception $ex) {
             $lArrOptions = array('msg'=> $ex->getMessage());
-            throw new AppExceptions\GenericException('VAULT_FS_STORE_SOURCEFILE_NOK',$lArrOptions);
+            throw new AppExceptions\GenericException('VAULT_FS_STORE_SOURCEFILE_NOK', $lArrOptions);
         }
         return $lStrDest;
     }
+
+    /**
+     * Copy a file to Vault TMP directory
+     *
+     * @param file    $pStrSourcefilepath       File to copy to Vault tmp directory
+     * @param string  $pStrVaultTmpDirFilename  Filename of the target file which will be stored into Vault TMP Directory, if not specified, source filename is kept.
+     *
+     * @return file   Filepath of the file copied.
+     */
+    public static function copyFiletoVaultTmpDir($pStrSourcefilepath, $pStrVaultTmpDirFilename=null)
+    {
+        // Source exists ?
+        if (!file_exists($pStrSourcefilepath)) {
+            $lArrMessage = array('msg' => sprintf('Source file "%s" doesn\'t exists!', $pStrSourcefilepath));
+            throw new GenericException('VAULTCPFILE-SOURCE-NOT-EXISTS', $lArrMessage);
+        }
+
+        $lStrTargetFilepath = Vault::getTemporaryVaultDirectory().'/';
+
+        // Target path definition !
+        if (!is_null($pStrVaultTmpDirFilename)) {
+            $lStrTargetFilepath .= $pStrVaultTmpDirFilename;
+        } else {
+            $lStrTargetFilepath .= basename($pStrSourcefilepath);
+        }
+
+        // Checking targetfilename existance!
+        $lIntCpt = 1;
+        while (file_exists($lStrTargetFilepath)) {
+            $lStrTargetFilepath = Vault::getTemporaryVaultDirectory().'/'.str_replace(FileFS::getExtensionFromPath($lStrTargetFilepath), '', basename($lStrTargetFilepath)).'-'.strval($lIntCpt).'.'.FileFS::getExtensionFromPath($lStrTargetFilepath);
+            $lIntCpt++;
+        }
+
+        \MyGED\Core\FileSystem\FileSystem::filecopy($pStrSourcefilepath, $lStrTargetFilepath);
+
+        return $lStrTargetFilepath;
+    }//end copyFiletoVaultTmpDir()
 
 
     /**
@@ -282,9 +308,9 @@ class VaultFs {
      * @return boolean
      * @throws AppExceptions\GenericException
      */
-    public static function checkIfPathIsReachable($pStrFilePath,$pBoolRaiseException=false)
+    public static function checkIfPathIsReachable($pStrFilePath, $pBoolRaiseException=false)
     {
-        return VaultFs::checkIfPathIsEmpty($pStrFilePath,$pBoolRaiseException) && VaultFs::checkIfPathExistsAnIsDir($pStrFilePath,$pBoolRaiseException) && VaultFs::checkIfPathIsReadable($pStrFilePath,$pBoolRaiseException);
+        return VaultFs::checkIfPathIsEmpty($pStrFilePath, $pBoolRaiseException) && VaultFs::checkIfPathExistsAnIsDir($pStrFilePath, $pBoolRaiseException) && VaultFs::checkIfPathIsReadable($pStrFilePath, $pBoolRaiseException);
     }
 
     /**
@@ -298,17 +324,16 @@ class VaultFs {
      * @return boolean
      * @throws AppExceptions\GenericException
      */
-    private static function checkIfPathIsEmpty($pStrFilePath,$pBoolRaiseException=false)
+    private static function checkIfPathIsEmpty($pStrFilePath, $pBoolRaiseException=false)
     {
         $lBoolCheck = true;
 
         // Parameter not empty
-        if(empty($pStrFilePath)){
+        if (empty($pStrFilePath)) {
             $lBoolCheck = false;
-            if($pBoolRaiseException)
-            {
+            if ($pBoolRaiseException) {
                 $lArrOptions = array('msg'=>"Path empty.");
-                throw new AppExceptions\GenericException("VAULT_CHK_EMPTY_FILEPATH",$lArrOptions);
+                throw new AppExceptions\GenericException("VAULT_CHK_EMPTY_FILEPATH", $lArrOptions);
             }
         }
 
@@ -326,16 +351,15 @@ class VaultFs {
      * @return boolean
      * @throws AppExceptions\GenericException
      */
-    private static function checkIfPathExistsAnIsDir($pStrFilePath,$pBoolRaiseException=false)
+    private static function checkIfPathExistsAnIsDir($pStrFilePath, $pBoolRaiseException=false)
     {
         $lBoolCheck = true;
 
-        if(!file_exists($pStrFilePath) || !is_dir($pStrFilePath)) {
+        if (!file_exists($pStrFilePath) || !is_dir($pStrFilePath)) {
             $lBoolCheck = false;
-            if($pBoolRaiseException)
-            {
+            if ($pBoolRaiseException) {
                 $lArrOptions = array('msg'=>"Path '".$pStrFilePath."' not exists or not a dir.");
-                throw new AppExceptions\GenericException("VAULT_CHK_NOT_A_DIRECTORY",$lArrOptions);
+                throw new AppExceptions\GenericException("VAULT_CHK_NOT_A_DIRECTORY", $lArrOptions);
             }
         }
 
@@ -353,17 +377,16 @@ class VaultFs {
      * @return boolean
      * @throws AppExceptions\GenericException
      */
-    private static function checkIfPathIsReadable($pStrFilePath,$pBoolRaiseException=false)
+    private static function checkIfPathIsReadable($pStrFilePath, $pBoolRaiseException=false)
     {
         $lBoolCheck = true;
 
         // Is readable ?
-        if(!is_readable($pStrFilePath)) {
+        if (!is_readable($pStrFilePath)) {
             $lBoolCheck = false;
-            if($pBoolRaiseException)
-            {
+            if ($pBoolRaiseException) {
                 $lArrOptions = array('msg'=>"Path '".$pStrFilePath."' can't be read..");
-                throw new AppExceptions\GenericException("VAULT_CHK_PATH_NOTREADABLE",$lArrOptions);
+                throw new AppExceptions\GenericException("VAULT_CHK_PATH_NOTREADABLE", $lArrOptions);
             }
         }
 

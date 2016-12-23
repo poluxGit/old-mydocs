@@ -9,7 +9,7 @@
 namespace MyGED\Business;
 
 // Classes needed!
-use MyGED\Core\Application as App;
+use MyGED\Application\Application as App;
 use MyGED\Core\Database as Core;
 use MyGED\Business\MetaTypeDocument as MetaTypeDoc;
 
@@ -82,13 +82,6 @@ class Document extends Core\AbstractDBObject
     public function store()
     {
         parent::storeDataToDB(App::getAppDabaseObject());
-
-        // $lStrDocID = $this->getId();
-        // print_r('ID3:'.$lStrDocID);
-        // $this->initializeMetadataFromTypeDoc();
-        // $lStrDocID = $this->getId();
-        // print_r('ID3:'.$lStrDocID);
-        // print_r('Fin ID3');
     }//end store()
 
      /**

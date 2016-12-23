@@ -8,7 +8,7 @@
  */
 namespace MyGED\Business;
 
-use MyGED\Application\App as App;
+use MyGED\Application\Application as App;
 use MyGED\Core as Core;
 
 /**
@@ -16,13 +16,15 @@ use MyGED\Core as Core;
  *
  * Defintion of a MetaTypeDocument
  */
-class MetaTypeDocument extends Core\AbstractDBObject {
+class MetaTypeDocument extends Core\Database\AbstractDBObject
+{
 
     /**
      * Default Class Constructor - New MetaDocument
      */
-    public function __construct($pStrUid=null) {
-        parent::__construct($pStrUid,App::getAppDabaseObject());
+    public function __construct($pStrUid=null)
+    {
+        parent::__construct($pStrUid, App::getAppDabaseObject());
     }//end __construct()
 
     /**
@@ -104,5 +106,4 @@ class MetaTypeDocument extends Core\AbstractDBObject {
         static::setupDBConfig();
         return static::getAllItems(App::getAppDabaseObject(), $lStrWhereCondition);
     }//end getAllItemsDataFromTypeDocument()
-
 }//end class
