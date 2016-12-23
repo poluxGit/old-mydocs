@@ -17,6 +17,7 @@ Personal documents management & storage application
 |:----------:|:---|:---:|:----:|
 |alpha-01|OCR File analysis |None|OCR Analysis => Tesseract.|
 |alpha-02|OCR File analysis integrated |None|OCR Analysis => Tesseract.|
+|alpha-03|Task Management implemented and integrated |None|PNCTL_FORK|
 
 
 ###  Technical information
@@ -31,14 +32,13 @@ Personal documents management & storage application
 #### Dev. Environment
 
 
-
 **Idées dev des tâches Asynchrone avec rappel du GUI**
 
 ```
-Sauvegarde de l'objet dans $_SERVER ou $_SESSION
-
-- Via listener PHP
-- Voir avec EventHTTP::bind() pour mapper nouveau port relatifs à une tâche via apache
+Sauvegarde de l objet dans $_SERVER ou $_SESSION
+ - Via listener PHP
+ - Voir avec EventHTTP::bind() pour mapper
+ nouveau port relatifs à une tâche via apache
 
 ```
 

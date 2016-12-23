@@ -9,7 +9,8 @@
 namespace MyGED\Core\Database;
 
 use MyGED\Vault\Vault as Vault;
-use MyGED\Core\Exceptions as AppExceptions;
+use MyGED\Exceptions\ApplicationException as AppExceptions;
+use MyGED\Exceptions as Exceptions;
 
 /**
  * DBObject Class.
@@ -501,13 +502,18 @@ abstract class AbstractDBObject
                 throw new AppExceptions\GenericException('VAULT_DB_LOAD_PDO_FAIL', $lArrOptions);
             } else {
                 $lArrData = $lObjPdoStat->fetchAll(\PDO::FETCH_ASSOC);
-                foreach ($lArrData[0] as $lstrkey => $lStrValue) {
-                    $this->_aFieldValues[$lstrkey] = $lStrValue;
+                if (count($lArrData) > 0) {
+                    foreach ($lArrData[0] as $lstrkey => $lStrValue) {
+                        $this->_aFieldValues[$lstrkey] = $lStrValue;
+                    }
+                } else {
+                    $lArrParameters = array('msg'=>sprintf("No Data FOUND for '%s'.", $pStrUid));
+                    throw new AppExceptions('NO-DATA-FOUNDED', $lArrParameters);
                 }
             }
         } catch (\Exception $e) {
             $lArrOptions = array('msg' => 'Error during loading a data from DB => '.$e->getMessage());
-            throw new AppExceptions\GenericException('VAULT_DB_LOAD_FAIL', $lArrOptions);
+            throw new Exceptions\GenericException('APP_DB_LOAD_FAIL', $lArrOptions);
         }
 
         return true;

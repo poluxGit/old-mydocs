@@ -14,6 +14,10 @@ namespace MyGED\Vault;
 use MyGED\Core\Exceptions as AppExceptions;
 use MyGED\Core\FileSystem\FileSystem as FileFS;
 
+use MyGED\Exceptions\GenericException;
+
+use MyGED\Vault\Vault;
+
 /**
  * VaulFs Class Definition
  *
@@ -120,7 +124,7 @@ class VaultFs
      /**
      * Checking Vault configuration files validity.
      *
-     * @param type $pStrVaultPathToCheck
+     * @param string $pStrVaultPathToCheck  Path to check
      *
      * @return boolean TRUE if ok - File which is missing instead
      */
@@ -254,6 +258,43 @@ class VaultFs
         }
         return $lStrDest;
     }
+
+    /**
+     * Copy a file to Vault TMP directory
+     *
+     * @param file    $pStrSourcefilepath       File to copy to Vault tmp directory
+     * @param string  $pStrVaultTmpDirFilename  Filename of the target file which will be stored into Vault TMP Directory, if not specified, source filename is kept.
+     *
+     * @return file   Filepath of the file copied.
+     */
+    public static function copyFiletoVaultTmpDir($pStrSourcefilepath, $pStrVaultTmpDirFilename=null)
+    {
+        // Source exists ?
+        if (!file_exists($pStrSourcefilepath)) {
+            $lArrMessage = array('msg' => sprintf('Source file "%s" doesn\'t exists!', $pStrSourcefilepath));
+            throw new GenericException('VAULTCPFILE-SOURCE-NOT-EXISTS', $lArrMessage);
+        }
+
+        $lStrTargetFilepath = Vault::getTemporaryVaultDirectory().'/';
+
+        // Target path definition !
+        if (!is_null($pStrVaultTmpDirFilename)) {
+            $lStrTargetFilepath .= $pStrVaultTmpDirFilename;
+        } else {
+            $lStrTargetFilepath .= basename($pStrSourcefilepath);
+        }
+
+        // Checking targetfilename existance!
+        $lIntCpt = 1;
+        while (file_exists($lStrTargetFilepath)) {
+            $lStrTargetFilepath = Vault::getTemporaryVaultDirectory().'/'.str_replace(FileFS::getExtensionFromPath($lStrTargetFilepath), '', basename($lStrTargetFilepath)).'-'.strval($lIntCpt).'.'.FileFS::getExtensionFromPath($lStrTargetFilepath);
+            $lIntCpt++;
+        }
+
+        \MyGED\Core\FileSystem\FileSystem::filecopy($pStrSourcefilepath, $lStrTargetFilepath);
+
+        return $lStrTargetFilepath;
+    }//end copyFiletoVaultTmpDir()
 
 
     /**

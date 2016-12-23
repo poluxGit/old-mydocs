@@ -8,12 +8,8 @@
 namespace MyGED;
 
 require __DIR__ . '/../vendor/autoload.php';
-// use MyGED\Core\Application as Application;
-// use MyGED\Vault as Vault;
-// use MyGED\Application\AppAPIRouter as AppAPI;
-// use MyGED\Core\App as App;
 
-use MyGED\Core\Application;
+use MyGED\Application\Application;
 use MyGED\API\Router;
 
 // Initialise Application!
@@ -30,7 +26,7 @@ try {
     echo $API->processAPI();
     // TODO Gérer le retour avec code de retour en json et msg + data... aplha-02
 } catch (Exception $e) {
-    echo json_encode(Array('error' => $e->getMessage()));
+    echo json_encode(array('error' => $e->getMessage()));
 }
 
 exit;

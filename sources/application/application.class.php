@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Application Class File Definition
  *
@@ -9,11 +8,12 @@
  * @category CoreApplication
  */
 
-namespace MyGED\Core;
+namespace MyGED\Application;
 
 use MyGED\Exceptions;
 use MyGED\Vault as VaultApplication;
 use MyGED\Core\FileSystem\FileSystem as FileFS;
+use MyGED\Exceptions\ApplicationException;
 
 /**
  * Application Class definition
@@ -56,7 +56,7 @@ class Application
     public static function getAppDabaseObject()
     {
         return self::$_oMetaDatabase;
-    }
+    }//end getAppDabaseObject()
 
     /**
      * Returns an array containing all settings defined for application.
@@ -64,49 +64,107 @@ class Application
      * @link conf/mypp.settings.json
      * @return array Array of settings.
      */
-    private static function loadAppParamsFromJsonSettingFile()
+    private static function loadAppParamsFromJsonSettingFile($pStrConfigJSONFilePath=null)
     {
-        $lStrJson     = file_get_contents(self::$_sPathJSONSettingsFile);
+        $lstrFileToLoad = self::$_sPathJSONSettingsFile;
+        if (!empty($pStrConfigJSONFilePath)) {
+            if (file_exists($pStrConfigJSONFilePath)) {
+                $lstrFileToLoad = $pStrConfigJSONFilePath;
+            } else {
+                throw new ApplicationException(
+                  'APP-PARAM-FILE-NOT-FOUND',
+                  array(
+                    'msg' => sprintf(
+                      "JSON settings file '%s' not found!",
+                      $pStrConfigJSONFilePath)
+                  )
+                );
+            }
+        }
+
+        $lStrJson     = file_get_contents($lstrFileToLoad);
         $lArrSettings = json_decode($lStrJson, true);
 
         if (array_key_exists('db_path', $lArrSettings['settings'])) {
             self::setAppParam('SQLITE_DB_FILEPATH', $lArrSettings['settings']['db_path']);
         } else {
-            $lObjException = new ApplicationException('SETTINGS-01');
+            throw new ApplicationException('APP-PARAM-NOT-FOUND_DB-FILE',
+              array(
+                'msg'=> sprintf(
+                  "Setting '%s' must be specified into '%s' file.",
+                  'SQLITE_DB_FILEPATH',
+                  $lstrFileToLoad)
+              )
+            );
         }
+
+        if (array_key_exists('vault_ocr', $lArrSettings['settings'])) {
+            self::setAppParam('VAULT_OCR_DIR', $lArrSettings['settings']['vault_ocr']);
+        } else {
+            throw new ApplicationException('APP-PARAM-NOT_FOUND-VAULT_OCR_DIR',
+              array(
+                'msg'=> sprintf(
+                  "Setting '%s' must be specified into '%s' file.",
+                  'vault_ocr',
+                  $lstrFileToLoad)
+              )
+            );
+        }
+
 
         if (array_key_exists('vault_path', $lArrSettings['settings'])) {
             self::setAppParam('VAULT_ROOT', $lArrSettings['settings']['vault_path']);
         } else {
-            $lObjException = new ApplicationException('SETTINGS-02');
+            throw new ApplicationException('APP-PARAM-NOT-FOUND_VAULT-ROOT',
+              array(
+                'msg'=> sprintf(
+                  "Setting '%s' must be specified into '%s' file.",
+                  'VAULT_ROOT',
+                  $lstrFileToLoad)
+              )
+            );
         }
 
         if (array_key_exists('vault_db', $lArrSettings['settings'])) {
             self::setAppParam('VAULT_DB', $lArrSettings['settings']['vault_db']);
         } else {
-            $lObjException = new ApplicationException('SETTINGS-03');
+            throw new ApplicationException('APP-PARAM-NOT-FOUND_VAULT-DB',
+            array(
+              'msg'=> sprintf(
+                "Setting '%s' must be specified into '%s' file.",
+                'VAULT_DB',
+                $lstrFileToLoad)
+            )
+          );
         }
 
         if (array_key_exists('templates_path', $lArrSettings['settings'])) {
             self::setAppParam('TEMPLATES_ROOT', $lArrSettings['settings']['templates_path']);
         } else {
-            $lObjException = new ApplicationException('SETTINGS-04');
+            throw new ApplicationException('APP-PARAM-NOT-FOUND_TEMPLATES-ROOT',
+            array(
+              'msg'=> sprintf(
+                "Setting '%s' must be specified into '%s' file.",
+                'TEMPLATES_ROOT',
+                $lstrFileToLoad)
+            )
+          );
         }
     }//end loadAppParamsFromJsonSettingFile()
 
     /**
      * @deprecated since version 1
      */
-    public static function initApplication()
+    public static function initApplication($pStrApplicationSettingsJsonFilepath=null)
     {
-        self::loadAppParamsFromJsonSettingFile();
+        self::loadAppParamsFromJsonSettingFile($pStrApplicationSettingsJsonFilepath);
 
         // Database init...
         self::initDatabase();
 
         // Vault init...
         self::initVault();
-    }
+    }//end initApplication()
 
     /**
      * Database initialisation
@@ -127,7 +185,7 @@ class Application
             $lArrOptions = array('msg'=>"SQLite db DSN : '".$lStrDSN."'. ExMsg : ".$ex->getMessage());
             throw new ApplicationException\GenericException('PDO_CONNECTION_FAILED', $lArrOptions);
         }
-    }
+    }//end initDatabase()
 
      /**
      * Vault initialisation
@@ -137,7 +195,9 @@ class Application
     public static function initVault($pBCreateIfNeeded = false)
     {
         $lStrVaultFilePath = self::getAppParam('VAULT_ROOT');
+        $lStrVaultOCRDir = self::getAppParam('VAULT_OCR_DIR');
         VaultApplication\Vault::loadVault($lStrVaultFilePath, $pBCreateIfNeeded);
+        VaultApplication\Vault::setVaultOCRDirectory($lStrVaultOCRDir);
     }
 
     /**
@@ -154,7 +214,6 @@ class Application
         if (array_key_exists($pStrParamIdx, self::$_aParams)) {
             $lMixedResult =  self::$_aParams[$pStrParamIdx];
         }
-
         return $lMixedResult;
     }
 
@@ -208,12 +267,5 @@ class Application
             $lArrOptions = array('msg'=> $e->getMessage());
             throw new ApplicationException\GenericException('INIT_APP_DB_FAILED', $lArrOptions);
         }
-    }
-
-    /**
-     * Return a temporary filename
-     */
-    public static function getTemporaryFilename()
-    {
     }
 }

@@ -9,7 +9,7 @@
 namespace MyGED\Business;
 
 // Classes needed!
-use MyGED\Core\Application as App;
+use MyGED\Application\Application as App;
 use MyGED\Core\Database as Core;
 use MyGED\Business\MetaTypeDocument as MetaTypeDoc;
 

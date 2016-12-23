@@ -163,3 +163,29 @@ CREATE TABLE vault_files
     file_mime VARCHAR(50),
     primary key (file_id)
 );
+
+-- Table Taches
+CREATE TABLE tasks
+(
+    task_id VARCHAR(20) not null,
+    task_title VARCHAR(4000) not null default '',
+    task_start_timestamp INTEGER not null default 0,
+    task_register_timestamp INTEGER not null default 0,
+    task_end_timestamp INTEGER not null default 0,
+    task_result_code INTEGER default null,
+    task_status VARCHAR(50) default 'NEW',
+    task_pid VARCHAR(50) default null,
+    task_json_param VARCHAR(4000) default '',
+    primary key (task_id)
+);
+
+-- Table Taches
+CREATE TABLE tasks_log
+(
+    task_id VARCHAR(20) not null,
+    task_log_description VARCHAR(4000) not null default '',
+    task_log_timestamp INTEGER not null,
+    task_status VARCHAR(50) default 'NEW',
+    task_pid VARCHAR(50) default null,
+    primary key (task_id,task_log_timestamp)
+);
