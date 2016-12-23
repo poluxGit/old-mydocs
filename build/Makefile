@@ -41,6 +41,7 @@ cleanfiles:
 	@echo "* Cleaning files !"
 	@echo "------------------------------------------------";
 	@rm -f ./../data/app_vault/files/*
+	@rm -Rf ./../data/app_vault/ocr-analysis/*
 	@echo "-> Cleaning done!"
 
 clean: begin

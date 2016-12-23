@@ -9,9 +9,8 @@
 require __DIR__.'/../vendor/autoload.php';
 
 use MyGED\Vault as Vault;
-use MyGED\Core\Application;
+use MyGED\Application\Application as Application;
 use MyGED\Business\Document;
-
 
 // Application init!
 

@@ -82,13 +82,14 @@ class FileSystem
     /**
      * Returns extension from filename
      *
+     * @link http://php.net/manual/fr/function.pathinfo.php
      * @param string $pStrFilepath Filepath
      * @return string File extension
      */
     public static function getExtensionFromPath($pStrFilepath)
     {
         return pathinfo($pStrFilepath, PATHINFO_EXTENSION);
-    }
+    }//end getExtensionFromPath()
 
     /**
      * Return a temporay filename
@@ -99,5 +100,5 @@ class FileSystem
     public static function getTempFilename($pStrTargetDir='/tmp', $pStrFilePrefix='tmp')
     {
         return tempnam($pStrTargetDir, $pStrFilePrefix);
-    }
+    }//end getTempFilename()
 }

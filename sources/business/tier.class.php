@@ -8,7 +8,7 @@
  */
 namespace MyGED\Business;
 
-use MyGED\Application\App as App;
+use MyGED\Application\Application as App;
 use MyGED\Core as Core;
 
 /**

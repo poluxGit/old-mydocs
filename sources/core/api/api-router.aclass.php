@@ -432,7 +432,8 @@ abstract class API
      */
     protected static function isValidEndpoint($pStrEndpointName)
     {
-        return class_exists(static::getEndpointClassname($pStrEndpointName));
+        $lStrEndpoint = ucfirst($pStrEndpointName);
+        return class_exists(static::getEndpointClassname($lStrEndpoint));
     }
 
     /**

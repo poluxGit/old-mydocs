@@ -15,6 +15,9 @@ use MyGED\Core\Exceptions as AppExceptions;
 use MyGED\Core\Database as AppDb;
 use MyGED\Application as App;
 
+use MyGED\Vault\Vault;
+use MyGED\Application\Application;
+
 /**
  * Vaul Class Definition
  *
@@ -30,6 +33,24 @@ class Vault
      * @static
      */
     protected static $_sVaultPath = null;
+
+    /**
+     * Vault TMP Path
+     *
+     * @var string
+     * @access protected
+     * @static
+     */
+    protected static $_sVaultTMPPath = '/tmp';
+
+    /**
+     * Vault OCR Path
+     *
+     * @var string
+     * @access protected
+     * @static
+     */
+    protected static $_sVaultOCRPath = '';
 
     /**
      * Vault DB filepath
@@ -59,6 +80,18 @@ class Vault
     private static function setVaultPath($pStrVaultPath)
     {
         self::$_sVaultPath = $pStrVaultPath;
+    }
+
+    /**
+     * Define Vault OCR Path Property
+     *
+     * @param type $pStrVaultPath
+     *
+     * @static
+     */
+    public static function setVaultOCRDirectory($pStrVaultOCRPath)
+    {
+        self::$_sVaultOCRPath = $pStrVaultOCRPath;
     }
 
     /**
@@ -142,12 +175,32 @@ class Vault
 
     public static function getDatabaseFilePath()
     {
-        return self::$_sVaultPath.'/db/vault.db';
+        return Application::getAppParam('VAULT_DB');
     }
 
     public static function getTemplateVaultDBFilePath()
     {
         return App\App::getAppParam('TEMPLATES_ROOT').'/vault_template.db';
+    }
+
+    /**
+     * Returns complete path of  Vault temporary Directory
+     *
+     * @return string   Complete filepath of  Vault temporary Directory
+     */
+    public static function getTemporaryVaultDirectory()
+    {
+        return self::$_sVaultTMPPath;
+    }
+
+    /**
+     * Returns complete path of Vault OCR Directory
+     *
+     * @return string   Complete filepath of  Vault OCR Directory
+     */
+    public static function getVaultOCRDirectory()
+    {
+        return self::$_sVaultOCRPath;
     }
 
 
@@ -156,6 +209,17 @@ class Vault
         return self::$_sVaultPath;
     }
 
+    /**
+     * Store a content into Vault
+     *
+     * @param bytes   $pMixedContent          Content to store
+     * @param string  $pStrOriginalFilename   Source filename
+     * @param string  $pStrFileTypeMime       Mime Type of source file
+     *
+     * @throws GenericException In case of technical error during storage
+     *
+     * @return string   id of file created
+     */
     public static function storeFromContent($pMixedContent, $pStrOriginalFilename='', $pStrFileTypeMime='')
     {
         $lStrUniqueIdDoc = self::generateUniqueID('fic-');
@@ -185,6 +249,28 @@ class Vault
         try {
             $lStrFilePath = VaultFs::storeFromFilepath($lStrUniqueIdDoc, $pStrFilePath);
             VaultDb::insertNewFile($lStrUniqueIdDoc, basename($pStrFilePath), $lStrFilePath);
+        } catch (\Exception $ex) {
+            $lArrOptions = array('msg'=> sprintf('Error saving a file into the Vault (filepath to store: %s) | Error : %s', $pStrFilePath, $ex->getMessage()));
+            throw new AppExceptions\GenericException('LOAD_VAULT_CHECKDB', $lArrOptions);
+        }
+        return $lStrUniqueIdDoc;
+    }
+
+    /**
+     * Store a file from existing file with Filename update
+     *
+     * @param string  $pStrFilePath           Path of file to store.
+     * @param string  $pStrOriginalFilename   Original Filename to store.
+     *
+     * @return string Id Unique Doc
+     */
+    public static function storeFromFilepathWithFilename($pStrFilePath, $pStrOriginalFilename)
+    {
+        $lStrUniqueIdDoc = self::generateUniqueID('fic-');
+        $lStrFilePathTmp = VaultFs::copyFiletoVaultTmpDir($pStrFilePath, $pStrOriginalFilename);
+        try {
+            $lStrFilePath = VaultFs::storeFromFilepath($lStrUniqueIdDoc, $lStrFilePathTmp);
+            VaultDb::insertNewFile($lStrUniqueIdDoc, $pStrOriginalFilename, $lStrFilePath);
         } catch (\Exception $ex) {
             $lArrOptions = array('msg'=> sprintf('Error saving a file into the Vault (filepath to store: %s) | Error : %s', $pStrFilePath, $ex->getMessage()));
             throw new AppExceptions\GenericException('LOAD_VAULT_CHECKDB', $lArrOptions);

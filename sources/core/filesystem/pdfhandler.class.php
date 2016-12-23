@@ -9,12 +9,13 @@
  * @author polux@poluxfr.org
  *
  */
-
 namespace MyGED\Core\FileSystem;
 
 use MyGED\Core\FileSystem\FileSystem as Fs;
 use MyGED\Core as Core;
 use TesseractOCR;
+use MyGED\Exceptions\GenericException;
+use MyGED\Exceptions\ApplicationException as ApplicationException;
 
 /**
  * PDF Handler Toolkit
@@ -42,7 +43,7 @@ class PDFHandler
      */
     public function __construct($pStrFilepath)
     {
-        if (!empty($pStrFilepath)) {
+        if (!empty($pStrFilepath) && file_exists($pStrFilepath)) {
             $this->_pdfFilepath = $pStrFilepath;
         } else {
             throw new ApplicationException(
@@ -177,6 +178,56 @@ class PDFHandler
     }//end getMetaCount()
 
     /**
+     * Launch an OCR Analysis on PDF
+     *
+     * @param file    $pStrInputPDFFilepath   File PAth of PDF to OCR analyze
+     * @param intger  $pIntPageNumber         Index of page of PDF to Analyze
+     *
+     * @return array(string) OCR results as array of string
+     */
+    public function launchOCRAnalysisByPage($pStrInputPDFFilepath, $pIntPageNumber)
+    {
+        if (file_exists($pStrInputPDFFilepath)) {
+            $lArrPDFFileToAnalyze = self::splitPDFPageByPage($pStrInputPDFFilepath);
+            $lArrResult = array();
+
+            if ($pIntPageNumber > count($lArrPDFFileToAnalyze) && $pIntPageNumber>0) {
+                throw new GenericException(
+                'PDF-IDX-PAGE-NOT-EXISTS',
+                array(
+                  'msg' => sprintf(
+                            'Page Number "%s" in parameters is upper than total page count "%s" of PDF file.',
+                            $pIntPageNumber,
+                            count($lArrPDFFileToAnalyze)
+                          )
+                      )
+              );
+            } else {
+                # OCR Analysis
+              $lStrFilepath = $lArrPDFFileToAnalyze[$pIntPageNumber];
+                $lStrCmd = "convert -density 300 -trim $lStrFilepath -quality 100 $lStrFilepath.png";
+                exec($lStrCmd, $lArrOutpuCmd, $lIntRetVal);
+                if ($lIntRetVal===0) {
+                    $lObjOCR = new TesseractOCR("$lStrFilepath.png");
+                    $lObjOCR->lang('fra');
+                    $lArrResult[] = $lObjOCR->run();
+                }
+                return $lArrResult;
+            }
+        } else {
+            throw new ApplicationException(
+            'PDF-OCR-INPUT-PDFFILE-NOT-FOUND',
+            array('msg' =>
+              sprintf(
+                "PDF file '%s' not found!",
+                $pStrInputPDFFilepath
+              )
+            )
+          );
+        }
+    }//end launchOCRAnalysisByPage()
+
+    /**
      * Split a PDF into X PDF (where X are the pages count).
      *
      * @param file  $pStrInputPDFFilepath Filepath of PDF to split (no writing on this file).
@@ -190,18 +241,20 @@ class PDFHandler
 
             // For each pages !
             $lIntPagecount = $lObjPDFFile->getPagesCount();
+            //  print_r($lIntPagecount);
             $lIntCpt = 1;
             $lArrPDFFiles = array();
 
             while ($lIntCpt<=$lIntPagecount) {
                 $lStrTemp = Fs::getTempFilename();
                 $lStrCodeRetour = $lObjPDFFile->_splitPDFbyPage($lStrTemp, $lIntCpt, $lIntCpt);
+
                 if (intval($lStrCodeRetour) === 0) {
                     array_push($lArrPDFFiles, $lStrTemp);
                 }
                 $lIntCpt++;
             }
-
+            //print_r($lArrPDFFiles);
             return $lArrPDFFiles;
         } else {
             throw new ApplicationException(

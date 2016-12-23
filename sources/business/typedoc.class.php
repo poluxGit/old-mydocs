@@ -8,7 +8,7 @@
  */
 namespace MyGED\Business;
 
-use MyGED\Application\App as App;
+use MyGED\Application\Application as App;
 use MyGED\Core as Core;
 
 /**
@@ -16,7 +16,7 @@ use MyGED\Core as Core;
  *
  * Defintion of a TypeDocument
  */
-class TypeDocument extends Core\AbstractDBObject
+class TypeDocument extends Core\Database\AbstractDBObject
 {
 
     /**
