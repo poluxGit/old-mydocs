@@ -36,7 +36,7 @@ class CategorieTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        App::initApplication(__DIR__.'/../mydocs.settings.json');
+        App::initApplication();
     }
 
     /**
