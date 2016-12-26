@@ -11,7 +11,7 @@
 
 namespace MyGED\Vault;
 
-use MyGED\Core\Exceptions as AppExceptions;
+use MyGED\Exceptions as AppExceptions;
 use MyGED\Core\FileSystem\FileSystem as FileFS;
 
 use MyGED\Exceptions\GenericException;

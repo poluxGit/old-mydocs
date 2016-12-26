@@ -7,8 +7,10 @@ MAINTAINER Polux <polux@poluxfr.org>
 USER root
 
 RUN apt-get update && apt-get install -y --force-yes \
-     php5-xsl
+     php5-xsl \
+     php5-sqlite
 RUN php5enmod xsl
+RUN php5enmod pdo_sqlite
 
 # PHP Unit installation
 
