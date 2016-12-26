@@ -143,4 +143,15 @@ class CategorieTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($e->getAppCodeException(), 'APP-DB_LOAD_FAIL');
         }
     }//end testGetDocById()
+
+    /**
+     * @covers MyGED\Business\Categorie::getAllClassItemsData()
+     * @test
+     */
+    public function testgetAllItems()
+    {
+        $lArrCat = Categorie::getAllClassItemsData();
+
+        $this->assertEquals(count($lArrCat), 2, 'Categorie class object not valid!');
+    }//end testgetAllItems()
 }//end class
