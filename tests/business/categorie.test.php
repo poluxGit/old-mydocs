@@ -23,6 +23,8 @@ namespace MyGED\Tests\Business;
 use MyGED\Business\Categorie as Categorie;
 use MyGED\Application\Application as App;
 
+use MyGED\Exceptions\GenericException;
+
 /**
  * CategorieTest Class testing Categorie class.
  *
@@ -50,6 +52,7 @@ class CategorieTest extends \PHPUnit_Framework_TestCase
     /**
      * testAddNewCategorie.
      *
+     * @covers MyGED\Business\Document::store
      * @test
      */
     public function testAddNewCategorie()
@@ -77,7 +80,6 @@ class CategorieTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers MyGED\Business\Document::getDocById
-     *
      * @test
      */
     public function testGetDocById()
@@ -87,6 +89,33 @@ class CategorieTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($lObjDoc instanceof \MyGED\Business\Categorie, 'Categorie class object not valid!');
 
         $lStrTitre = 'Cat #2';
+        $lStrCode = 'cat-phpunit-test02';
+
+        $lObjDoc->setTitle($lStrTitre);
+        $lObjDoc->setAttributeValue('cat_code', $lStrCode);
+
+        $lObjDoc->store();
+        $lStrIdDoc = $lObjDoc->getId();
+
+        // Reload same doc as new Object !
+        $lObjDoc2 = Categorie::getDocById($lStrIdDoc);
+
+        // Title validating!
+        $this->assertEquals($lObjDoc2->getTitle(), $lStrTitre, 'Title invalid ! #1');
+        $this->assertEquals($lObjDoc->getTitle(), $lStrTitre, 'Title invalid ! #2');
+    }//end testGetDocById()
+
+    /**
+     * @covers MyGED\Business\Document::delete()
+     * @test
+     */
+    public function testDeleteCat()
+    {
+        $lObjDoc = new Categorie();
+
+        $this->assertTrue($lObjDoc instanceof \MyGED\Business\Categorie, 'Categorie class object not valid!');
+
+        $lStrTitre = 'Cat #3';
         $lStrCode = 'cat-phpunit-test03';
 
         $lObjDoc->setTitle($lStrTitre);
@@ -101,5 +130,15 @@ class CategorieTest extends \PHPUnit_Framework_TestCase
         // Title validating!
         $this->assertEquals($lObjDoc2->getTitle(), $lStrTitre, 'Title invalid ! #1');
         $this->assertEquals($lObjDoc->getTitle(), $lStrTitre, 'Title invalid ! #2');
-    }
-}
+
+        // Try to delete it!
+        $lObjDoc2->delete();
+
+        try {
+            Categorie::getDocById($lStrIdDoc);
+        } catch (\Exception $e) {
+            $this->assertTrue($e instanceof \MyGED\Exceptions\GenericException, 'Exception class not valid!');
+            $this->assertEquals($e->getAppCodeException(), 'APP-DB_LOAD_FAIL');
+        }
+    }//end testGetDocById()
+}//end class

@@ -465,7 +465,6 @@ abstract class AbstractDBObject
         return true;
     }//end executeSQLQuery()
 
-
     /**
      * Load Object from Database.
      *
@@ -488,18 +487,21 @@ abstract class AbstractDBObject
                 $lArrOptions = array(
                     'msg' => "Error during loading from DB - No DB Handler defined !"
                 );
-                throw new AppExceptions\GenericException('APP_DB_NO_DB_HANDLER', $lArrOptions);
+                throw new AppExceptions\GenericException('APP-NO_DB', $lArrOptions);
             }
 
+            // Building SQL Query!
             $lStrSQL = self::generateSQLSelectOrder();
             $lStrSQL .= $this->getSQLWhereCondition($pStrUid);
 
-
+            // Execute SQL Query!
             $lObjPdoStat = $lObjDb->query($lStrSQL);
 
             if (!$lObjPdoStat) {
-                $lArrOptions = array('msg' => $lObjDb->errorInfo()[2]);
-                throw new AppExceptions\GenericException('VAULT_DB_LOAD_PDO_FAIL', $lArrOptions);
+                $lArrOptions = array(
+                  'msg' => sprintf(
+                    "Execution of query '%s' failed. DB Message: '%s'.", $lStrSQL, $lObjDb->errorInfo()[2]));
+                throw new AppExceptions\GenericException('APP-DB_ERROR', $lArrOptions);
             } else {
                 $lArrData = $lObjPdoStat->fetchAll(\PDO::FETCH_ASSOC);
                 if (count($lArrData) > 0) {
@@ -507,13 +509,14 @@ abstract class AbstractDBObject
                         $this->_aFieldValues[$lstrkey] = $lStrValue;
                     }
                 } else {
-                    $lArrParameters = array('msg'=>sprintf("No Data FOUND for '%s'.", $pStrUid));
-                    throw new AppExceptions('NO-DATA-FOUNDED', $lArrParameters);
+                    $lArrParameters = array('msg'=>sprintf("No result with UID:'%s'!", $pStrUid));
+                    throw new AppExceptions\GenericException('APP-DB_NO_DATA_FOUNDED', $lArrParameters);
                 }
             }
         } catch (\Exception $e) {
-            $lArrOptions = array('msg' => 'Error during loading a data from DB => '.$e->getMessage());
-            throw new Exceptions\GenericException('APP_DB_LOAD_FAIL', $lArrOptions);
+            $lArrOptions = array('msg' =>
+            sprintf("An error occured during loading data. Exception Message:'%s'.", $e->getMessage()));
+            throw new Exceptions\GenericException('APP-DB_LOAD_FAIL', $lArrOptions);
         }
 
         return true;

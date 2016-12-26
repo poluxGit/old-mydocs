@@ -5,7 +5,7 @@
          backupGlobals="false"
          verbose="true">
   <testsuites>
-    <testsuite name="PHPUnit">
+    <testsuite name="BusinessTests">
       <directory suffix="test.php">../tests/business/</directory>
     </testsuite>
   </testsuites>
@@ -21,6 +21,10 @@
   <filter>
     <whitelist processUncoveredFilesFromWhitelist="true">
       <directory suffix="class.php">../sources/business/</directory>
+      <directory suffix="class.php">../sources/application/</directory>
+      <directory suffix=".php">../sources/core/</directory>
+      <directory suffix=".php">../sources/process/</directory>
+      <directory suffix=".php">../sources/vault/</directory>
       <exclude>
        <file>PHPUnit/Autoload.php</file>
        <file>PHPUnit/Framework/Assert/Functions.php</file>
