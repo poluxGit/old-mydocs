@@ -37,7 +37,7 @@ class DocumentTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        App::initApplication();
+        App::initApplication(null, true);
     }
 
     /**

@@ -153,15 +153,15 @@ class Application
     /**
      * @deprecated since version 1
      */
-    public static function initApplication($pStrApplicationSettingsJsonFilepath=null)
+    public static function initApplication($pStrApplicationSettingsJsonFilepath=null, $pBoolForceReset=false)
     {
         self::loadAppParamsFromJsonSettingFile($pStrApplicationSettingsJsonFilepath);
 
         // Database init...
-        self::initDatabase();
+        self::initDatabase($pBoolForceReset);
 
         // Vault init...
-        self::initVault();
+        self::initVault($pBoolForceReset);
     }//end initApplication()
 
     /**
@@ -169,11 +169,11 @@ class Application
      *
      * @throws ApplicationException\GenericException
      */
-    public static function initDatabase()
+    public static function initDatabase($pBoolForceReset=false)
     {
         try {
             // Application DB file does not exists ?
-            if (!file_exists(self::getAppParam('SQLITE_DB_FILEPATH'))) {
+            if (!file_exists(self::getAppParam('SQLITE_DB_FILEPATH')) || $pBoolForceReset===true) {
                 // Recreate it from template!
                 static::resetApplicationDBFile();
             }
