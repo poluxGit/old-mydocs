@@ -17,7 +17,7 @@
  <property name="phpdox"  value="${basedir}/build/tools/phpdox.phar"/>
  <property name="phploc"  value="${basedir}/build/tools/phploc.phar"/>
  <property name="phpmd"   value="${basedir}/build/tools/phpmd.phar"/>-->
- <property name="phpunit" value="${basedir}/build/tools/phpunit-5.7.4.phar"/> 
+ <property name="phpunit" value="${basedir}/vendor/bin/phpunit"/> 
 
  <!-- Use this when the tools are managed by Composer in ${basedir}/vendor/bin
  <property name="pdepend" value="${basedir}/vendor/bin/pdepend"/>

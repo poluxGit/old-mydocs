@@ -10,10 +10,9 @@
 
 namespace MyGED\Application;
 
-use MyGED\Exceptions;
 use MyGED\Vault as VaultApplication;
 use MyGED\Core\FileSystem\FileSystem as FileFS;
-use MyGED\Exceptions\ApplicationException;
+use MyGED\Exceptions as ApplicationException;
 
 /**
  * Application Class definition
@@ -30,7 +29,7 @@ class Application
      * @var string
      * @access private
      */
-    private static $_sPathJSONSettingsFile = '/var/www/html/php-myged/conf/mydocs.settings.json';
+    private static $_sPathJSONSettingsFile = __DIR__.'/../../conf/mydocs.settings.json';
 
     /**
      * Application Parameters
@@ -182,7 +181,7 @@ class Application
             $lObjPdoDB = \MyGED\Core\Database\DatabaseTools::getSQLitePDODbObj(self::getAppParam('SQLITE_DB_FILEPATH'));
             self::$_oMetaDatabase = $lObjPdoDB;
         } catch (\Exception $ex) {
-            $lArrOptions = array('msg'=>"SQLite db DSN : '".$lStrDSN."'. ExMsg : ".$ex->getMessage());
+            $lArrOptions = array('msg'=>"SQLite db DSN : '".self::getAppParam('SQLITE_DB_FILEPATH')."'. ExMsg : ".$ex->getMessage());
             throw new ApplicationException\GenericException('PDO_CONNECTION_FAILED', $lArrOptions);
         }
     }//end initDatabase()

@@ -1,0 +1,9 @@
+{ "settings":{
+    "app_name"        : "MyGED",
+    "db_path"         : "/home/polux/Projects/mydocs/data/app_db/app.db",
+    "vault_path"      : "/home/polux/Projects/mydocs/data/app_vault/",
+    "vault_db"        : "/home/polux/Projects/mydocs/data/app_db/app.db",
+    "vault_ocr"       : "/home/polux/Projects/mydocs/data/app_vault/ocr-analysis/",
+    "templates_path"  : "/var/www/html/php-myged/sources/templates/"
+  }
+}

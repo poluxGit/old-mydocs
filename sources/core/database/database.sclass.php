@@ -9,7 +9,7 @@
 
 namespace MyGED\Core\Database;
 
-use MyGED\Core\Exceptions as AppExceptions;
+use MyGED\Exceptions as AppExceptions;
 
 /**
  * DatabaseTools Class definition

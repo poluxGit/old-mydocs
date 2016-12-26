@@ -18,11 +18,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-namespace MyGED\Testing\Application;
+namespace MyGED\Tests\Business;
 
 use MyGED\Business\Categorie as Categorie;
-use MyGED\Application\App as App;
-use MyGED\Core\Exceptions as AppExceptions;
+use MyGED\Application\Application as App;
 
 /**
  * CategorieTest Class testing Categorie class.
@@ -37,17 +36,7 @@ class CategorieTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        App::setAppParam('TEMPLATES_ROOT', '/home/polux/Projects/php-myged/application/templates');
-        App::setAppParam('SQLITE_DB_FILEPATH', '/home/polux/Projects/php-myged/data/app.db');
-        App::setAppParam('VAULT_ROOT', '/home/polux/Projects/php-myged/data/vault');
-
-        App::resetApplicationDBFile();
-        
-        // Database init...
-        App::initDatabase();
-
-        // Vault init...
-        App::initVault();
+        App::initApplication(__DIR__.'/../mydocs.settings.json');
     }
 
     /**
@@ -84,8 +73,6 @@ class CategorieTest extends \PHPUnit_Framework_TestCase
         // Title validating!
         $this->assertEquals($lObjDoc2->getTitle(), $lStrTitre, 'Title invalid ! #1');
         $this->assertEquals($lObjDoc->getTitle(), $lStrTitre, 'Title invalid ! #2');
-
-       
     }
 
     /**
@@ -114,6 +101,5 @@ class CategorieTest extends \PHPUnit_Framework_TestCase
         // Title validating!
         $this->assertEquals($lObjDoc2->getTitle(), $lStrTitre, 'Title invalid ! #1');
         $this->assertEquals($lObjDoc->getTitle(), $lStrTitre, 'Title invalid ! #2');
-
     }
 }

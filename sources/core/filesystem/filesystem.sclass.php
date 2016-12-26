@@ -20,7 +20,7 @@
 
 namespace MyGED\Core\FileSystem;
 
-use MyGED\Core\Exceptions as AppExceptions;
+use MyGED\Exceptions as AppExceptions;
 
 /**
  * Filesystem Management - ToolsBox
