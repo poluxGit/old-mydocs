@@ -85,7 +85,7 @@ class Application
         $lArrSettings = json_decode($lStrJson, true);
 
         if (array_key_exists('db_path', $lArrSettings['settings'])) {
-            self::setAppParam('SQLITE_DB_FILEPATH', $lArrSettings['settings']['db_path']);
+            self::setAppParam('SQLITE_DB_FILEPATH', __DIR__.'/../../'.$lArrSettings['settings']['db_path']);
         } else {
             throw new ApplicationException('APP-PARAM-NOT-FOUND_DB-FILE',
               array(
@@ -98,7 +98,7 @@ class Application
         }
 
         if (array_key_exists('vault_ocr', $lArrSettings['settings'])) {
-            self::setAppParam('VAULT_OCR_DIR', $lArrSettings['settings']['vault_ocr']);
+            self::setAppParam('VAULT_OCR_DIR', __DIR__.'/../../'.$lArrSettings['settings']['vault_ocr']);
         } else {
             throw new ApplicationException('APP-PARAM-NOT_FOUND-VAULT_OCR_DIR',
               array(
@@ -110,9 +110,8 @@ class Application
             );
         }
 
-
         if (array_key_exists('vault_path', $lArrSettings['settings'])) {
-            self::setAppParam('VAULT_ROOT', $lArrSettings['settings']['vault_path']);
+            self::setAppParam('VAULT_ROOT', __DIR__.'/../../'.$lArrSettings['settings']['vault_path']);
         } else {
             throw new ApplicationException('APP-PARAM-NOT-FOUND_VAULT-ROOT',
               array(
@@ -125,7 +124,7 @@ class Application
         }
 
         if (array_key_exists('vault_db', $lArrSettings['settings'])) {
-            self::setAppParam('VAULT_DB', $lArrSettings['settings']['vault_db']);
+            self::setAppParam('VAULT_DB', __DIR__.'/../../'.$lArrSettings['settings']['vault_db']);
         } else {
             throw new ApplicationException('APP-PARAM-NOT-FOUND_VAULT-DB',
             array(
@@ -138,7 +137,7 @@ class Application
         }
 
         if (array_key_exists('templates_path', $lArrSettings['settings'])) {
-            self::setAppParam('TEMPLATES_ROOT', $lArrSettings['settings']['templates_path']);
+            self::setAppParam('TEMPLATES_ROOT', __DIR__.'/../../'.$lArrSettings['settings']['templates_path']);
         } else {
             throw new ApplicationException('APP-PARAM-NOT-FOUND_TEMPLATES-ROOT',
             array(
