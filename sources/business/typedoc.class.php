@@ -10,13 +10,14 @@ namespace MyGED\Business;
 
 use MyGED\Application\Application as App;
 use MyGED\Core as Core;
+use MyGED\Core\Database\AbstractDBObject;
 
 /**
  * TypeDocument Class
  *
  * Defintion of a TypeDocument
  */
-class TypeDocument extends Core\Database\AbstractDBObject
+class TypeDocument extends AbstractDBObject
 {
 
     /**

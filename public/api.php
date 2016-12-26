@@ -1,7 +1,7 @@
 <?php
 
 /**
- * RESTful API - Main Script - EntryPoint
+ * HTTP RESTful API - Main Script - EntryPoint
  *
  * @author polux <polux@poluxfr.org>
  */

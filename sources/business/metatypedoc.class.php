@@ -10,13 +10,14 @@ namespace MyGED\Business;
 
 use MyGED\Application\Application as App;
 use MyGED\Core as Core;
+use MyGED\Core\Database\AbstractDBObject;
 
 /**
  * MetaTypeDocument Class
  *
  * Defintion of a MetaTypeDocument
  */
-class MetaTypeDocument extends Core\Database\AbstractDBObject
+class MetaTypeDocument extends AbstractDBObject
 {
 
     /**

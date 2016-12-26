@@ -10,13 +10,14 @@ namespace MyGED\Business;
 
 use MyGED\Application\Application as App;
 use MyGED\Core as Core;
+use MyGED\Core\Database\AbstractDBObject;
 
 /**
  * Tier Class
  *
  * Defintion of a Tier
  */
-class Tier extends Core\AbstractDBObject
+class Tier extends AbstractDBObject
 {
 
     /**

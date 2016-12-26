@@ -9,7 +9,7 @@
 namespace MyGED\Core\Database;
 
 use MyGED\Vault\Vault as Vault;
-use MyGED\Exceptions\ApplicationException as AppExceptions;
+use MyGED\Exceptions as AppExceptions;
 use MyGED\Exceptions as Exceptions;
 
 /**

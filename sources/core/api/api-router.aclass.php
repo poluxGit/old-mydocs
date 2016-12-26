@@ -331,7 +331,7 @@ abstract class API
      */
     protected function callEndpointBySpecificRouteProcess()
     {
-        $lArrRouteDef = $this->getSpecificRouteDefinition($this->initRequest,  $this->method);
+        $lArrRouteDef = $this->getSpecificRouteDefinition($this->initRequest, $this->method);
         $lStrCallBack = $lArrRouteDef['callback'];
 
         // Callback !
@@ -560,7 +560,7 @@ abstract class API
      *
      * @param \MyGED\Core\AbstractDBObject $pObjTarget  Business Object concerned
      */
-    protected function defineRequestParamsAsFieldOnToBusinessObject(\MyGED\Core\AbstractDBObject $pObjTarget)
+    protected function defineRequestParamsAsFieldOnToBusinessObject(\MyGED\Core\Database\AbstractDBObject $pObjTarget)
     {
         foreach ($this->request as $lStrKey => $lStrValue) {
             $pObjTarget->setAttributeValue($lStrKey, $lStrValue);

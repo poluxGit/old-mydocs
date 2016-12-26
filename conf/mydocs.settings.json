@@ -3,7 +3,7 @@
     "db_path"         : "/var/www/html/php-myged/data/app_db/app.db",
     "vault_path"      : "/var/www/html/php-myged/data/app_vault/",
     "vault_db"        : "/var/www/html/php-myged/data/app_db/app.db",
-    "vault_ocr"        : "/var/www/html/php-myged/data/app_vault/ocr-analysis/",
+    "vault_ocr"       : "/var/www/html/php-myged/data/app_vault/ocr-analysis/",
     "templates_path"  : "/var/www/html/php-myged/sources/templates/"
   }
 }
