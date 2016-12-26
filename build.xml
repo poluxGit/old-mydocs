@@ -233,6 +233,8 @@
   <exec executable="${phpunit}" resultproperty="result.phpunit" taskname="phpunit">
    <arg value="--configuration"/>
    <arg path="${basedir}/build/phpunit.xml"/>
+   <arg value="--include-path"/>
+   <arg path="${basedir}/tests/"/>
   </exec>
 
   <property name="phpunit.done" value="true"/>
