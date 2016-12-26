@@ -11,7 +11,7 @@
 
 namespace MyGED\Vault;
 
-use MyGED\Core\Exceptions as AppExceptions;
+use MyGED\Exceptions as AppExceptions;
 
 /**
  * Vaul Class Definition
