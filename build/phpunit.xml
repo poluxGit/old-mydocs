@@ -21,7 +21,7 @@
 
     <testsuites>
         <testsuite name="AllTests">
-        <directory>.</directory>
+        <directory>/tests/php-unit/business-tests/</directory>
         </testsuite>
     </testsuites>
 
