@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/3.7/phpunit.xsd"
+         bootstrap="../tests/bootstrap.php"
+         backupGlobals="false"
+         verbose="true">
+  <testsuites>
+    <testsuite name="PHPUnit">
+      <directory suffix="test.php">../tests/business/</directory>
+    </testsuite>
+  </testsuites>
+
+  <logging>
+     <log type="coverage-html" target="build/coverage" title="PHPUnit"
+          charset="UTF-8" yui="true" highlight="true"
+          lowUpperBound="35" highLowerBound="70"/>
+     <log type="coverage-clover" target="logs/clover.xml"/>
+     <log type="junit" target="logs/junit.xml" logIncompleteSkipped="false"/>
+   </logging>
+
+  <filter>
+    <whitelist processUncoveredFilesFromWhitelist="true">
+      <directory suffix="test.php">../tests/business/</directory>
+      <exclude>
+       <file>PHPUnit/Autoload.php</file>
+       <file>PHPUnit/Framework/Assert/Functions.php</file>
+      </exclude>
+    </whitelist>
+  </filter>
+
+  <php>
+    <const name="PHPUNIT_TESTSUITE" value="true"/>
+  </php>
+</phpunit>
