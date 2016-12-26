@@ -54,6 +54,8 @@ class CategorieTest extends \PHPUnit_Framework_TestCase
      *
      * @covers MyGED\Business\Categorie::store
      * @covers MyGED\Business\Categorie::getId
+     * @covers MyGED\Business\Categorie::setupDBConfig()
+     * @covers MyGED\Business\Categorie::getCategoriesDataForDocument()
      *
      * @test
      */
