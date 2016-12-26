@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
-<phpunit bootstrap="./../tests/bootstrap.php">   
+<phpunit bootstrap="tests/bootstrap.php">
 
     <filter>
-  <whitelist>
-        <directory suffix=".class.php">../../application/classes/business</directory>
-        <directory suffix=".test.php">/business-tests</directory>
-    </whitelist>
+      <whitelist>
+          <directory suffix=".php">sources/application/</directory>
+          <directory suffix=".php">sources/</directory>
+          <directory suffix=".test.php">tests/phpunit/business-tests</directory>
+      </whitelist>
     </filter>
 
   <testsuites>
