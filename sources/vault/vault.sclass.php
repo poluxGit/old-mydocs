@@ -13,7 +13,7 @@ namespace MyGED\Vault;
 
 use MyGED\Exceptions as AppExceptions;
 use MyGED\Core\Database as AppDb;
-use MyGED\Application as App;
+use MyGED\Application\Application as App;
 
 use MyGED\Vault\Vault;
 use MyGED\Application\Application;
