@@ -4,8 +4,14 @@ FROM voduytuan/jenkins-php-docker
 MAINTAINER Polux <polux@poluxfr.org>
 
 
-# PHP Unit installation
 USER root
+
+RUN apt-get update && apt-get install -y --force-yes \
+     php5-xsl
+RUN php5enmod xsl
+
+# PHP Unit installation
+
 RUN wget https://phar.phpunit.de/phpunit.phar && chmod +x ./phpunit.phar && mv ./phpunit.phar /usr/bin/phpunit
 RUN curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar && chmod +x ./phpcs.phar && mv ./phpcs.phar /usr/bin/phpcs
 RUN curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcbf.phar && chmod +x ./phpcbf.phar && mv ./phpcbf.phar /usr/bin/phpcbf
