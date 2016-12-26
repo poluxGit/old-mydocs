@@ -236,7 +236,7 @@ class Application
      */
     public static function getTemplateAppDbFilePath()
     {
-        return static::getAppParam('TEMPLATES_ROOT').'/app_template.db';
+        return static::getAppParam('TEMPLATES_ROOT').'/app.db';
     }
 
     /**
