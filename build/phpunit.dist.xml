@@ -20,7 +20,7 @@
 
   <filter>
     <whitelist processUncoveredFilesFromWhitelist="true">
-      <directory suffix="test.php">../tests/business/</directory>
+      <directory suffix="class.php">../sources/business/</directory>
       <exclude>
        <file>PHPUnit/Autoload.php</file>
        <file>PHPUnit/Framework/Assert/Functions.php</file>
