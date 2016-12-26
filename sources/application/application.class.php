@@ -194,7 +194,7 @@ class Application
     {
         $lStrVaultFilePath = self::getAppParam('VAULT_ROOT');
         $lStrVaultOCRDir = self::getAppParam('VAULT_OCR_DIR');
-        VaultApplication\Vault::loadVault($lStrVaultFilePath, $pBCreateIfNeeded);
+        VaultApplication\Vault::loadVault($lStrVaultFilePath, true);
         VaultApplication\Vault::setVaultOCRDirectory($lStrVaultOCRDir);
     }
 
