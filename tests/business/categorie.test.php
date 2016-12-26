@@ -152,6 +152,6 @@ class CategorieTest extends \PHPUnit_Framework_TestCase
     {
         $lArrCat = Categorie::getAllClassItemsData();
 
-        $this->assertEquals(count($lArrCat), 2, 'Categorie class object not valid!');
+        $this->assertEquals(count($lArrCat), 1, 'Categorie class object not valid!');
     }//end testgetAllItems()
 }//end class
