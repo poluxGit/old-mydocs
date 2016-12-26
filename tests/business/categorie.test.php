@@ -52,7 +52,9 @@ class CategorieTest extends \PHPUnit_Framework_TestCase
     /**
      * testAddNewCategorie.
      *
-     * @covers MyGED\Business\Document::store
+     * @covers MyGED\Business\Categorie::store
+     * @covers MyGED\Business\Categorie::getId
+     *
      * @test
      */
     public function testAddNewCategorie()
@@ -79,7 +81,7 @@ class CategorieTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers MyGED\Business\Document::getDocById
+     * @covers MyGED\Business\Categorie::getDocById
      * @test
      */
     public function testGetDocById()
@@ -106,7 +108,7 @@ class CategorieTest extends \PHPUnit_Framework_TestCase
     }//end testGetDocById()
 
     /**
-     * @covers MyGED\Business\Document::delete()
+     * @covers MyGED\Business\Categorie::delete()
      * @test
      */
     public function testDeleteCat()
