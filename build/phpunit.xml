@@ -18,6 +18,9 @@
       <file>vault-tests/main.test.php</file>
     </testsuite>
     <testsuite name="business">
+      <whitelist>
+          <directory suffix=".php">../sources/</directory>
+        </whitelist>
       <file>business-tests/document.test.php</file>
     </testsuite>
 
