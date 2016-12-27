@@ -64,6 +64,7 @@ class MetaTypeDocument extends AbstractDBObject
             'meta_mask',
             'meta_json_html_attributes'
         );
+        self::$_sUIDPrefix='meta-';
     }
 
     /**

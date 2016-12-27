@@ -25,7 +25,7 @@ use MyGED\Application\Application as App;
 use MyGED\Exceptions as AppExceptions;
 
 /**
- * DocumentTest Class testing Document class.
+ * TierTest Class testing Tier class.
  *
  * @author polux <polux@poluxfr.org>
  */

@@ -21,8 +21,7 @@
 namespace MyGED\Tests\Business;
 
 use MyGED\Business\Categorie as Categorie;
-use MyGED\Application\Application as App;
-
+use MyGED\Application\Application;
 use MyGED\Exceptions\GenericException;
 
 /**
@@ -38,7 +37,7 @@ class CategorieTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        App::initApplication(null, true);
+        Application::initApplication(null, true);
     }
 
     /**
@@ -56,6 +55,7 @@ class CategorieTest extends \PHPUnit_Framework_TestCase
      * @covers MyGED\Business\Categorie::getId
      * @covers MyGED\Business\Categorie::setupDBConfig()
      * @covers MyGED\Business\Categorie::getCategoriesDataForDocument()
+     * @covers MyGED\Business\Categorie::__construct()
      *
      * @test
      */
@@ -153,7 +153,6 @@ class CategorieTest extends \PHPUnit_Framework_TestCase
     public function testgetAllItems()
     {
         $lArrCat = Categorie::getAllClassItemsData();
-
         $this->assertEquals(count($lArrCat), 1, 'Categorie class object not valid!');
     }//end testgetAllItems()
 }//end class

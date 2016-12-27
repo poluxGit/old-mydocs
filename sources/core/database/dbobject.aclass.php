@@ -52,6 +52,14 @@ abstract class AbstractDBObject
     protected static $_sTableName = null;
 
     /**
+     * Prefix used for generate UID.
+     *
+     * @var string prefix for UID
+     * @static
+     */
+    protected static $_sUIDPrefix = 'doc-';
+
+    /**
      * Fields values of Object.
      *
      * @var array(string) Array of fieldname about data table
@@ -188,7 +196,7 @@ abstract class AbstractDBObject
 
                 if (empty($this->_aFieldValues[self::$_sIdDBFieldname])) {
                     if ($pbAutoGenerateUid) {
-                        $lStrIdxDoc = Vault::generateUniqueID();
+                        $lStrIdxDoc = Vault::generateUniqueID(self::$_sUIDPrefix.'-');
                         $this->_aFieldValues[self::$_sIdDBFieldname] = $lStrIdxDoc;
                     } else {
                         $lArrOptions = array(
@@ -364,18 +372,17 @@ abstract class AbstractDBObject
             }
 
             //XXX echo $lStrSQL;
-
             $lObjPdoStat = $lObjDb->query($lStrSQL);
 
             if (!$lObjPdoStat) {
                 $lArrOptions = array('msg' => $lObjDb->errorInfo()[2]." - ".$lStrSQL);
-                throw new AppExceptions\GenericException('APP_DB_LOAD_PDO_FAIL', $lArrOptions);
+                throw new AppExceptions\GenericException('APP-DB_LOAD_PDO_FAIL', $lArrOptions);
             } else {
                 $lArrData = $lObjPdoStat->fetchAll(\PDO::FETCH_ASSOC);
             }
         } catch (\Exception $e) {
             $lArrOptions = array('msg' => $e->getMessage());
-            throw new AppExceptions\GenericException('BUSINESS_DATA_GENERIC_LOAD_FAILED', $lArrOptions);
+            throw new AppExceptions\GenericException('BUSINESS-DATA_LOAD_FAILED', $lArrOptions);
         }
 
         return $lArrData;

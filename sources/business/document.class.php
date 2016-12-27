@@ -63,6 +63,7 @@ class Document extends AbstractDBObject
             'doc_month',
             'doc_day'
         );
+        self::$_sUIDPrefix='doc-';
     }
 
     /**

@@ -244,7 +244,7 @@ class Vault
      */
     public static function storeFromFilepath($pStrFilePath)
     {
-        $lStrUniqueIdDoc = self::generateUniqueID();
+        $lStrUniqueIdDoc = self::generateUniqueID('fic-');
 
         try {
             $lStrFilePath = VaultFs::storeFromFilepath($lStrUniqueIdDoc, $pStrFilePath);

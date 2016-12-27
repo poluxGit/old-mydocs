@@ -7,6 +7,7 @@
   <testsuites>
     <testsuite name="BusinessTests">
       <directory suffix="test.php">../tests/business/</directory>
+      <directory suffix="test.php">../tests/core/</directory>
     </testsuite>
   </testsuites>
 
