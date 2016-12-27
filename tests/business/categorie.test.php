@@ -37,7 +37,7 @@ class CategorieTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        Application::initApplication(null, true);
+        Application::initApplication();
     }
 
     /**
@@ -150,9 +150,9 @@ class CategorieTest extends \PHPUnit_Framework_TestCase
      * @covers MyGED\Business\Categorie::getAllClassItemsData()
      * @test
      */
-    public function testgetAllItems()
+    public function testGetAllItems()
     {
         $lArrCat = Categorie::getAllClassItemsData();
-        $this->assertEquals(count($lArrCat), 1, 'Categorie class object not valid!');
+        $this->assertEquals(count($lArrCat), 3, 'Categorie class object not valid!');
     }//end testgetAllItems()
 }//end class

@@ -37,7 +37,7 @@ class DocumentTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        App::initApplication(null, true);
+        App::initApplication();
     }
 
     /**
@@ -48,13 +48,17 @@ class DocumentTest extends \PHPUnit_Framework_TestCase
     {
     }
 
-
     /**
-     * testAddNewDocument
+     * testCreateNewDocument
      *
      * @test
+     *
+     * @covers \MyGED\Business\Document::__construct
+     * @covers \MyGED\Business\Document::getId
+     * @covers \MyGED\Business\Document::getTitle
+     * @covers \MyGED\Business\Document::store
      */
-    public function testAddNewDocument()
+    public function testCreateNewDocument()
     {
         $lObjDoc = new Document();
 
@@ -85,8 +89,12 @@ class DocumentTest extends \PHPUnit_Framework_TestCase
     /**
      * testUpdateNewDocument
      *
-     * @depends testAddNewDocument
      * @test
+     * @depends testCreateNewDocument
+     * @covers \MyGED\Business\Document::setAttributeValue
+     * @covers \MyGED\Business\Document::setTitle
+     * @covers \MyGED\Business\Document::getTitle
+     * @covers \MyGED\Business\Document::__construct
      */
     public function testUpdateNewDocument()
     {
@@ -121,9 +129,9 @@ class DocumentTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($lObjDoc->getTitle(), $lStrTitre, 'Title not updated invalid ! #2');
     }
 
-
-
     /**
+     * testGetDocById
+     *
      * @covers MyGED\Business\Document::getDocById
      * @test
      */

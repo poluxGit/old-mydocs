@@ -37,7 +37,7 @@ class TierTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        App::initApplication(null, true);
+        App::initApplication();
     }
 
     /**
