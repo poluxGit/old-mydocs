@@ -98,7 +98,6 @@ class ComposerStaticInitf9398dd9db53589949374bf34cda5499
         'File_Iterator_Factory' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Factory.php',
         'MyGED\\API\\Router' => __DIR__ . '/../..' . '/sources/api/router.class.php',
         'MyGED\\Application\\Application' => __DIR__ . '/../..' . '/sources/application/application.class.php',
-        'MyGED\\Application\\TasksManager' => __DIR__ . '/../..' . '/sources/application/tasks-manager.class.php',
         'MyGED\\Business\\Categorie' => __DIR__ . '/../..' . '/sources/business/categorie.class.php',
         'MyGED\\Business\\Document' => __DIR__ . '/../..' . '/sources/business/document.class.php',
         'MyGED\\Business\\MetaDocument' => __DIR__ . '/../..' . '/sources/business/metadoc.class.php',

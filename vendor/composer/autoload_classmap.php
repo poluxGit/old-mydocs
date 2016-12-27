@@ -34,7 +34,6 @@ return array(
     'File_Iterator_Factory' => $vendorDir . '/phpunit/php-file-iterator/src/Factory.php',
     'MyGED\\API\\Router' => $baseDir . '/sources/api/router.class.php',
     'MyGED\\Application\\Application' => $baseDir . '/sources/application/application.class.php',
-    'MyGED\\Application\\TasksManager' => $baseDir . '/sources/application/tasks-manager.class.php',
     'MyGED\\Business\\Categorie' => $baseDir . '/sources/business/categorie.class.php',
     'MyGED\\Business\\Document' => $baseDir . '/sources/business/document.class.php',
     'MyGED\\Business\\MetaDocument' => $baseDir . '/sources/business/metadoc.class.php',

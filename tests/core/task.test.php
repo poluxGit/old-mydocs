@@ -37,7 +37,7 @@ class TaskTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        Application::initApplication(null, true);
+        Application::initApplication();
     }//end setUp()
 
     /**
@@ -101,6 +101,6 @@ class TaskTest extends \PHPUnit_Framework_TestCase
     {
         $lObjNewTask = new Task();
         $lArrTasks = Task::getAllClassItemsData(null);
-        //$this->assertEquals(count($lArrTasks), 1, 'Task object not valid!');
+        $this->assertEquals(count($lArrTasks), 1, 'Task object not valid!');
     }//end testGetAllClassItem()
 }//end class

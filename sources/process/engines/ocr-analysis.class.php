@@ -7,7 +7,7 @@ namespace MyGED\Process\Engines;
 
 use MyGED\Exceptions\ApplicationException;
 use MyGED\Core\Tasks\GenericTask;
-use MyGED\Core\Tasks\AbstractTask;
+use MyGED\Core\Tasks\Task;
 use MyGED\Vault\Vault;
 use MyGED\Application\Application as Application;
 use MyGED\Core\FileSystem\FileSystem as FileSystem;
@@ -22,7 +22,7 @@ use MyGED\Process\Engines\OCRAnalysis;
  * @package MyGED
  * @subpackage OCR
  */
-class OCRAnalysis extends AbstractTask
+class OCRAnalysis extends Task
 {
     /**
      * Input filepath
@@ -178,7 +178,7 @@ class OCRAnalysis extends AbstractTask
      */
     public function getCurrentStep()
     {
-      return $this->_currentStep;
+        return $this->_currentStep;
     }//end getCurrentStep()
 
   /**
@@ -208,15 +208,14 @@ class OCRAnalysis extends AbstractTask
      */
     public static function createNewOCRTask()
     {
-      // New task init.!
-      $lObjOCRTask = new OCRAnalysis();
-      $lStrTaskUID = $lObjOCRTask->createTask(null, 'ocr');
-      $lObjOCRTask->setTitle('OCR analysis task.');
-      $lObjOCRTask->setCreationTimestamp(time());
-      $lObjOCRTask->setStartTimeStamp(time());
-      $lObjOCRTask->setStatus('INIT');
-      $lObjOCRTask->updateTask();
-      return $lStrTaskUID;
+        // New OCR task init.!
+        $lObjOCRTask = new OCRAnalysis();
+        $lObjOCRTask->setTitle('OCR analysis task.');
+        $lObjOCRTask->setCreationTimestamp(time());
+        $lObjOCRTask->setStartTimeStamp(time());
+        $lObjOCRTask->setStatus('INIT');
+        $lObjOCRTask->store();
+        return $lObjOCRTask->getId();
     }//end createNewOCRTask()
 
     /**
@@ -229,21 +228,18 @@ class OCRAnalysis extends AbstractTask
      */
     public function launchOCRAnalysis($pBoolForceOCR = false)
     {
-        if(is_null($this->getInputFileUID()))
-        {
-          throw new ApplicationException('OCR-INVALID-PARAM', [['msg'=>'Input File UID  must be set before launching analysis. OCR analysis aborted.']]);
-        }
-        else {
-          $lStrFilePath = Vault::getFilePathByID($this->_inputFileUID);
-          if (file_exists($lStrFilePath)) {
-              $this->setInputFilePath($lStrFilePath);
-          } else {
-              throw new ApplicationException('OCR-SOURCE-NOT-REACHABLE', [['msg'=>'Invalid source file. OCR analysis aborted. FileUid:'.$pStrFileUID]]);
-          }
+        if (is_null($this->getInputFileUID())) {
+            throw new ApplicationException('OCR-INVALID-PARAM', [['msg'=>'Input File UID  must be set before launching analysis. OCR analysis aborted.']]);
+        } else {
+            $lStrFilePath = Vault::getFilePathByID($this->_inputFileUID);
+            if (file_exists($lStrFilePath)) {
+                $this->setInputFilePath($lStrFilePath);
+            } else {
+                throw new ApplicationException('OCR-SOURCE_NOT_REACHABLE', [['msg'=>'Invalid source file. OCR analysis aborted. FileUid:'.$pStrFileUID]]);
+            }
         }
 
-        //$this->loadTask($this->_idTask);
-        $lStrTaskUID=$this->_idTask;
+        $lStrTaskUID=$this->getId();
 
         // File to analyze!
         $lStrInputFilepath = $this->getInputFilePath();
@@ -252,82 +248,76 @@ class OCRAnalysis extends AbstractTask
         $lStrOutputTxtFilepath = Vault::getVaultOCRDirectory().$this->getInputFileUID().'/'.$this->getInputFileUID().'.txt';
         $lStrOutputTxtDirectoryPath = Vault::getVaultOCRDirectory().$this->getInputFileUID();
 
-        if(!file_exists($lStrOutputTxtDirectoryPath)){
-          mkdir($lStrOutputTxtDirectoryPath);
+        if (!file_exists($lStrOutputTxtDirectoryPath)) {
+            mkdir($lStrOutputTxtDirectoryPath);
         }
 
         // OCR Result already performed ?
-        if(file_exists($lStrOutputTxtFilepath) && filesize($lStrOutputTxtFilepath)>0 && !$pBoolForceOCR)
-        {
-          return file_get_contents($lStrOutputTxtFilepath);
-        }
-        else {
-          $this->setOutputTextFile($lStrOutputTxtFilepath);
+        if (file_exists($lStrOutputTxtFilepath) && filesize($lStrOutputTxtFilepath)>0 && !$pBoolForceOCR) {
+            return file_get_contents($lStrOutputTxtFilepath);
+        } else {
+            $this->setOutputTextFile($lStrOutputTxtFilepath);
 
           //  Input File exists ?
-          if (file_exists($lStrInputFilepath))
-          {
-            // Task update!
+          if (file_exists($lStrInputFilepath)) {
+              // Task update!
             $this->setTitle('OCR analysis creation. File to analyze : '.$lStrInputFilepath);
-            $this->setCreationTimestamp(time());
-            $this->setStartTimeStamp(time());
-            $this->setStatus('STARTED');
-            $this->updateTask();
-
-            // OCR Main Process!
-            if(FileSystem::getExtensionFromPath($lStrInputFilepath) == 'pdf')
-            {
-              $lArrPDFFileToAnalyze = PDFHandler::splitPDFPageByPage($lStrInputFilepath);
-
-              $this->setCurrentStep(1);
-              $this->setStepCount(count($lArrPDFFileToAnalyze));
-              $this->setStatus('IN PROGRESS');
+              $this->setCreationTimestamp(time());
+              $this->setStartTimeStamp(time());
+              $this->setStatus('STARTED');
               $this->updateTask();
 
-              $lArrResult = array();
-              $lbFirst = true;
-              $lIntCpt = 0;
+            // OCR Main Process!
+            if (FileSystem::getExtensionFromPath($lStrInputFilepath) == 'pdf') {
+                $lArrPDFFileToAnalyze = PDFHandler::splitPDFPageByPage($lStrInputFilepath);
 
-              foreach ($lArrPDFFileToAnalyze as $lStrKey => $lStrFilepath)
-              {
-                // Convert Input file to PNG Image!
+                $this->setCurrentStep(1);
+                $this->setStepCount(count($lArrPDFFileToAnalyze));
+                $this->setStatus('IN PROGRESS');
+                $this->updateTask();
+
+                $lArrResult = array();
+                $lbFirst = true;
+                $lIntCpt = 0;
+
+                foreach ($lArrPDFFileToAnalyze as $lStrKey => $lStrFilepath) {
+                    // Convert Input file to PNG Image!
                 $lStrCmd = "convert -density 300 -trim $lStrFilepath -quality 100 $lStrFilepath.png";
-                exec($lStrCmd, $lArrOutputCmd, $this->_resultCode);
-                if ($this->_resultCode===0) {
-                    // OCR Processing!
+                    exec($lStrCmd, $lArrOutputCmd, $this->_resultCode);
+                    if ($this->_resultCode===0) {
+                        // OCR Processing!
                     $lObjOCR = new TesseractOCR("$lStrFilepath.png");
-                    $lObjOCR->lang('fra');
-                    $lStrOcrResult = $lObjOCR->run();
-                    $lArrResult[] = $lStrOcrResult;
-                    $lIntFlag = FILE_APPEND;
-                    if ($lbFirst === true) {
-                        $lIntFlag = 0;
-                        $lbFirst = false;
-                    }
+                        $lObjOCR->lang('fra');
+                        $lStrOcrResult = $lObjOCR->run();
+                        $lArrResult[] = $lStrOcrResult;
+                        $lIntFlag = FILE_APPEND;
+                        if ($lbFirst === true) {
+                            $lIntFlag = 0;
+                            $lbFirst = false;
+                        }
                     //Write result to new file!
                     file_put_contents($this->getOutputTextFile(), $lStrOcrResult, $lIntFlag);
 
                     // Extract Images of PDF!
-                    $lStrImagesPattern = $lStrOutputTxtDirectoryPath.'/'.$this->getInputFileUID().'-img_p'.str_pad(strval($lIntCpt+1),2,'0',STR_PAD_LEFT);
+                    $lStrImagesPattern = $lStrOutputTxtDirectoryPath.'/'.$this->getInputFileUID().'-img_p'.str_pad(strval($lIntCpt+1), 2, '0', STR_PAD_LEFT);
 
-                    $lStrCmd = "pdfimages -png $lStrFilepath $lStrImagesPattern";
+                        $lStrCmd = "pdfimages -png $lStrFilepath $lStrImagesPattern";
                     //return ($lStrCmd);
                     exec($lStrCmd, $lArrOutputCmd, $this->_resultCode);
                     //print_r($lArrOutputCmd);
 
                     $lIntCpt++;
-                    $this->setCurrentStep($lIntCpt);
-                    $this->updateTask();
-                }
-              }//end foreach
+                        $this->setCurrentStep($lIntCpt);
+                        $this->updateTask();
+                    }
+                }//end foreach
 
               $this->setStatus('FINISHED');
-              $this->setEndTimesTamp(time());
-              $this->updateTask();
-              return $lStrOcrResult;
-            }
-            else {
-              throw new ApplicationException(
+                $this->setEndTimesTamp(time());
+                $this->updateTask();
+                return $lStrOcrResult;
+            } else {
+                throw new ApplicationException(
                   'OCR-FILE-EXTENSION-NOT-SUPPORTED',
                   array('msg' =>
                     sprintf(
@@ -338,7 +328,7 @@ class OCRAnalysis extends AbstractTask
               );
             }
           } else {
-            throw new ApplicationException(
+              throw new ApplicationException(
                   'OCR-INPUT-FILE-NOT-FOUND',
                   array('msg' =>
                     sprintf(
@@ -361,9 +351,8 @@ class OCRAnalysis extends AbstractTask
      */
     protected function getTaskParametersJSON()
     {
-      $lArrParam = array( 'currentStep' => $this->getCurrentStep(), 'totalStep' => $this->getStepCount());
-      return json_encode($lArrParam);
-
+        $lArrParam = array( 'currentStep' => $this->getCurrentStep(), 'totalStep' => $this->getStepCount());
+        return json_encode($lArrParam);
     }//end getTaskParametersJSON()
 
     /**
@@ -373,14 +362,13 @@ class OCRAnalysis extends AbstractTask
      */
     protected function loadTaskParametersFromJSON($pStrJSONParametersValues)
     {
-      $lObjParam = json_decode($pStrJSONParametersValues);
+        $lObjParam = json_decode($pStrJSONParametersValues);
 
-      if(!is_null($lObjParam->currentStep)){
-        $this->setCurrentStep($lObjParam->currentStep);
-      }
-      if(!is_null($lObjParam->totalStep)){
-        $this->setStepCount($lObjParam->totalStep);
-      }
-
+        if (!is_null($lObjParam->currentStep)) {
+            $this->setCurrentStep($lObjParam->currentStep);
+        }
+        if (!is_null($lObjParam->totalStep)) {
+            $this->setStepCount($lObjParam->totalStep);
+        }
     }//end loadTaskParametersFromJSON()
 }

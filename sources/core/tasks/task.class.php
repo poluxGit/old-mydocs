@@ -22,7 +22,7 @@ use MyGED\Core\Database\AbstractDBObject as AbstractDBObject;
  */
 class Task extends AbstractDBObject
 {
-    
+
     /**
      * Array of Specific Parameters key=>value
      *
@@ -324,7 +324,7 @@ class Task extends AbstractDBObject
           'task_pid',
           'task_json_param'
         );
-        self::$_sUIDPrefix='task-';
+        self::$_sUIDPrefix='task';
     }
 
     /**
