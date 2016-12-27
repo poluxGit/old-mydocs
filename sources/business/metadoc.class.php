@@ -58,7 +58,7 @@ class MetaDocument extends AbstractDBObject
             'mdoc_title',
             'mdoc_value'
         );
-        self::$_sUIDPrefix='mdoc-';
+        self::$_sUIDPrefix='mdoc';
     }
 
     /**

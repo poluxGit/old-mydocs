@@ -58,7 +58,7 @@ class Tier extends AbstractDBObject
             'tier_code',
             'tier_desc'
         );
-        self::$_sUIDPrefix='tie-';
+        self::$_sUIDPrefix='tie';
     }
 
     /**

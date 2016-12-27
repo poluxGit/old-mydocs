@@ -58,7 +58,7 @@ class TypeDocument extends AbstractDBObject
             'tdoc_code',
             'tdoc_desc'
         );
-        self::$_sUIDPrefix='tdoc-';
+        self::$_sUIDPrefix='tdoc';
     }
 
     /**

@@ -57,7 +57,7 @@ class Categorie extends AbstractDBObject
             'cat_code',
             'cat_desc'
         );
-        self::$_sUIDPrefix='cat-';
+        self::$_sUIDPrefix='cat';
     }
 
     /**
