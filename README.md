@@ -25,7 +25,7 @@ Personal documents management & storage application
 #### Dependencies
 
 - [OCR Library **GITHUB Tesseract ocr for php** ](https://github.com/thiagoalessio/tesseract-ocr-for-php)
--
+
 
 ### Development informations
 

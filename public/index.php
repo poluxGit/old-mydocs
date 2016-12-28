@@ -13,7 +13,6 @@ use MyGED\Application\Application as Application;
 use MyGED\Business\Document;
 
 // Application init!
-
 Application::initApplication();
 
 
