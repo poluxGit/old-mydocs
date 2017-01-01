@@ -98,6 +98,7 @@ class Task extends AbstractDBObject
 
         return $lStrResult;
     }//end getAttributeValue()
+
     /**
      * Set Status object value (_statusTask)
      *
@@ -218,89 +219,6 @@ class Task extends AbstractDBObject
         return $this->getAttributeValue('task_pid');
     }//end getPID()
 
-
-    // DATABASE Management Methods
-    // =========================================================================
-    // /**
-    //  * Create a Task into DB
-    //  *
-    //  * @param \PDOStatement $pObjPDODatabase    PDOStatement Objet to use.
-    //  * @param string        $pStrUidTaskPrefix  Specific prefix to use for UID Generation.
-    //  *
-    //  * @return string Task ID
-    //  */
-    // public function createTask($pObjPDODatabase=null, $pStrUidTaskPrefix=null)
-    // {
-    //     try {
-    //         // PDO Db Object
-    //         if (!is_null($pObjPDODatabase)) {
-    //             $lObjDb = $pObjPDODatabase;
-    //         } elseif (!is_null(self::getPDODatabase())) {
-    //             $lObjDb = self::getPDODatabase();
-    //         } else {
-    //             $lArrOptions = array(
-    //                 'msg' => "Error during storage into SQL DB - No DB Handler defined !"
-    //             );
-    //             throw new Exceptions\GenericException('TASK_DB_NO_DB_HANDLER', $lArrOptions);
-    //         }
-    //
-    //         //Define Unique ID of Tasks!
-    //         $lStrPrefixUID = 'tasks-';
-    //         if (!is_null($pStrUidTaskPrefix)) {
-    //             $lStrPrefixUID = $pStrUidTaskPrefix."-";
-    //         }
-    //         $this->setID(Vault::generateUniqueID($lStrPrefixUID));
-    //
-    //         // Prepare Data Fields Value !
-    //         $lArrFieldValues = array();
-    //
-    //         $lArrFieldValues['task_id']                 = "'".$this->getID()."'";
-    //         $lArrFieldValues['task_title']              = "'".$this->getTitle()."'";
-    //         $lArrFieldValues['task_start_timestamp']    = $this->getStartTimeStamp();
-    //         $lArrFieldValues['task_register_timestamp'] = $this->getCreationTimestamp();
-    //         $lArrFieldValues['task_end_timestamp']      = $this->getEndTimesTamp();
-    //         $lArrFieldValues['task_result_code']        = 0;
-    //         $lArrFieldValues['task_status']             = "'".$this->getStatus()."'";
-    //         $lArrFieldValues['task_pid']                = "'".$this->getPID()."'";
-    //         $lArrFieldValues['task_json_param']         = "'".$this->getTaskParametersJSON()."'";
-    //
-    //         // Build SQL Insert Statement!
-    //         //
-    //         //INSERT INTO tasks (task_id,task_title,task_start_timestamp,task_register_timestamp,task_end_timestamp,task_result_code,task_status,task_pid,task_json_param) VALUES ('ocr-585c47493b22d','OCR analysis creation. File to analyze : /var/www/html/php-myged/data/app_vault//files/fic-585c41ae02119.pdf.',0,1482442569,0,,'NEW','','')
-    //         $lStrSQL = sprintf(
-    //             'INSERT INTO %s (%s) VALUES (%s)',
-    //             'tasks',
-    //             join(',', array_keys($lArrFieldValues)),
-    //             join(',', array_values($lArrFieldValues))
-    //           );
-    //
-    //         $lObjPdoStat = $lObjDb->query($lStrSQL);
-    //
-    //         if (($lObjPdoStat!=false)?($lObjPdoStat->rowCount() != 1):true) {
-    //             $lArrOptions = array(
-    //               'msg' => sprintf(
-    //                   "Error during storage into SQL DB (ID:%s) - Number of rows impacted : %d - (SQL query : '%s') - PDO Last error : %s",
-    //                   $this->getID(),
-    //                   ($lObjPdoStat!=false)?($lObjPdoStat->rowCount()):'0',
-    //                   $lStrSQL,
-    //                   sprintf("%s - %s", $lObjDb->errorInfo()[0], $lObjDb->errorInfo()[2])
-    //               )
-    //             );
-    //             throw new Exceptions\GenericException('TASK_DB_STORE_SQL -FAILED', $lArrOptions);
-    //         } else {
-    //             // Reload object from database!
-    //             $lStrTaskUID = $this->getID();
-    //             $this->_resetProperties();
-    //             $this->loadTask($lStrTaskUID);
-    //         }
-    //     } catch (\Exception $ex) {
-    //         $lArrOptions = array('msg' => $ex->getMessage());
-    //         throw new Exceptions\GenericException('TASK_DB_STORE_FAILED', $lArrOptions);
-    //     }
-    //     return $this->getID();
-    // }//end createTask()
-
-
     /***************************************************************************
      *  Extending AbstractDBObject
      ***************************************************************************/
@@ -359,4 +277,58 @@ class Task extends AbstractDBObject
     {
         return parent::deleteDataToDB(Application::getAppDabaseObject());
     }//end delete()
+
+    /**
+     * Add A Log message into Database relative to the current task object.
+     *
+     * @param string $pStrLogMessage  Message to Log
+     *
+     * @return  boolean TRUE if OK, FALSE else
+     */
+      public function addLogMessageAboutCurrentTask($pStrLogMessage)
+      {
+          try {
+              $lStrSQL = sprintf(
+                "INSERT INTO tasks_log (task_id,task_log_description,task_log_timestamp,task_status,task_pid)
+                 VALUES ('%s','%s',%d,'%s',0)",
+                $this->getId(),
+                $pStrLogMessage,
+                time(),
+                $this->getStatus()
+              );
+
+              $this->executeSQLQuery($lStrSQL);
+          } catch (Exception $ex) {
+              $lArrOptions = array('msg' => 'Error during execution of a SQL Statement => '.$ex->getMessage());
+              throw new AppExceptions\GenericException('DB_EXEC_SQL_PDO_FAIL', $lArrOptions);
+          }
+
+          return true;
+      }//end addLogMessageAboutCurrentTask()
+
+      /**
+       * Returns an array with all log messages (inverse chronologically ordered)
+       *
+       * @return array(task_logs_attributes)  Array containg all messages about current task.
+       */
+      public function getAllLogsMessageOnCurrentTask()
+      {
+          $lArrResult = null;
+          try {
+              $lStrSQL = sprintf(
+                    "SELECT task_id,task_log_description,task_log_timestamp,task_status,task_pid
+                     FROM tasks_log
+                     WHERE task_id='%s'
+                     ORDER BY task_log_timestamp DESC",
+                    $this->getId()
+            );
+
+              $lArrResult = $this->getDataFromSQLQuery($lStrSQL);
+          } catch (Exception $ex) {
+              $lArrOptions = array('msg' => 'Error during execution of a SQL Statement => '.$ex->getMessage());
+              throw new AppExceptions\GenericException('DB_EXEC_SQL_PDO_FAIL', $lArrOptions);
+          }
+
+          return $lArrResult;
+      }//end getAllLogsMessageOnCurrentTask()
 }//end class

@@ -101,4 +101,60 @@ class FileSystem
     {
         return tempnam($pStrTargetDir, $pStrFilePrefix);
     }//end getTempFilename()
+
+    /**
+     * Returns an array containing all files filtered by extension
+     *
+     * @param string  $pStrTargetDir            Directory where files will be scanned.
+     * @param boolean $pBoolRecursive           Recursive mode (scan all subfolders).
+     * @param string  $pStrFileExtensionFilter  File extensions to search.
+     *
+     * @return array(files) Scanned Files filtered by extension.
+     */
+    public static function getAllFilenamesOfDirectory($pStrTargetDir, $pBoolRecursive=false, $pStrFileExtensionFilter='*')
+    {
+        $lArrtmp = scandir($pStrTargetDir);
+        $lArrFiles = array_filter(scandir($pStrTargetDir), function ($file) {
+            return (strcmp('.', $file)!=0 && strcmp('..', $file)!=0);
+        });
+
+        $lArrFilesResult = array();
+        foreach ($lArrFiles as $lStrFilename) {
+            if (is_file($pStrTargetDir.'/'.$lStrFilename)) {
+                $lArrFilesResult[] = $pStrTargetDir.'/'.$lStrFilename;
+            }
+        }
+
+        // Recursive mode and subfolders exists!
+        if ($pBoolRecursive && static::getAllSubFoldersOfDirectory($pStrTargetDir) > 0) {
+            $lArrSubfolders = static::getAllSubFoldersOfDirectory($pStrTargetDir);
+
+            foreach ($lArrSubfolders as $lStrDirectoryPath) {
+                $lArrFilesResult = array_merge($lArrFilesResult, static::getAllFilenamesOfDirectory($lStrDirectoryPath, true, $pStrFileExtensionFilter));
+            }
+        }
+
+        return $lArrFilesResult;
+    }//end getAllFilenamesOfDirectory()
+
+    /**
+     * Returns an array containing all subfolders of Path
+     *
+     * @param string  $pStrTargetDir            Directory where files will be scanned.
+     *
+     * @return array(directory) Scanned Directory into TargetPath (one level).
+     */
+    public static function getAllSubFoldersOfDirectory($pStrTargetDir, $pBoolRecursive=false, $pStrFileExtensionFilter='*')
+    {
+        $lArrDirectories = array_filter(scandir($pStrTargetDir), function ($file) {
+            return (strcmp('.', $file)!=0 && strcmp('..', $file)!=0);
+        });
+        $lArrDirectoriesResult = array();
+        foreach ($lArrDirectories as $lStrDir) {
+            if (is_dir($pStrTargetDir.'/'.$lStrDir)) {
+                $lArrDirectoriesResult[] = $pStrTargetDir.'/'.$lStrDir;
+            }
+        }
+        return $lArrDirectoriesResult;
+    }//end getAllSubFoldersOfDirectory()
 }

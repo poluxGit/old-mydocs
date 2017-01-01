@@ -106,7 +106,22 @@ class Document extends AbstractDBObject
     private function defineSQLQuery()
     {
         $lStrSQL = sprintf(
-            "SELECT doc_id,meta_id,tdoc_id,mdoc_title,mdoc_value FROM app_meta_doc md  WHERE md.doc_id = '%s'",
+            "SELECT
+              md.doc_id as doc_id,
+              md.meta_id as meta_id ,
+              md.tdoc_id as tdoc_id,
+              md.mdoc_title as mdoc_title,
+              md.mdoc_value as mdoc_value,
+              mt.meta_datatype as meta_datatype,
+              mt.meta_pattern as meta_pattern,
+              mt.meta_desc as meta_desc,
+              mt.meta_required as meta_required,
+              mt.meta_placeholder as meta_placeholder,
+              mt.meta_mask as meta_mask,
+              mt.meta_json_html_attributes as meta_json_html_attributes
+             FROM
+              app_meta_doc md LEFT JOIN app_meta_tdoc mt ON mt.meta_id=md.meta_id
+            WHERE md.doc_id = '%s'",
             $this->getId()
         );
 

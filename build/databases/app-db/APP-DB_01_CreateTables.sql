@@ -186,6 +186,5 @@ CREATE TABLE tasks_log
     task_log_description VARCHAR(4000) not null default '',
     task_log_timestamp INTEGER not null,
     task_status VARCHAR(50) default 'NEW',
-    task_pid VARCHAR(50) default null,
-    primary key (task_id,task_log_timestamp)
+    task_pid VARCHAR(50) default null
 );

@@ -186,6 +186,7 @@ abstract class AbstractDBObject
                 );
                 throw new AppExceptions\GenericException('APP_DB_NO_DB_HANDLER', $lArrOptions);
             }
+
             // INSERT or UPDATE ?
             if ($this->_isNew) {
                 // Mode INSERT!
@@ -338,14 +339,16 @@ abstract class AbstractDBObject
      */
     public function setAttributeValue($pStrAttrName, $pStrValue)
     {
-        $lStrOldValue = $this->_aFieldValues[$pStrAttrName];
+        if (array_key_exists($pStrAttrName, $this->_aFieldValues)) {
+            $lStrOldValue = $this->_aFieldValues[$pStrAttrName];
 
-        if ($this->_isNew) {
-            $this->_aFieldValues[$pStrAttrName] = $pStrValue;
-        } else {
-            // Old and new value are differents ?
+            if ($this->_isNew) {
+                $this->_aFieldValues[$pStrAttrName] = $pStrValue;
+            } else {
+                // Old and new value are differents ?
             if (strcmp($pStrValue, $lStrOldValue) !== 0) {
                 $this->_aFieldValuesUpdated[$pStrAttrName] = $pStrValue;
+            }
             }
         }
     }
@@ -515,6 +518,7 @@ abstract class AbstractDBObject
                     foreach ($lArrData[0] as $lstrkey => $lStrValue) {
                         $this->_aFieldValues[$lstrkey] = $lStrValue;
                     }
+                    $this->_isNew = false;
                 } else {
                     $lArrParameters = array('msg'=>sprintf("No result with UID:'%s'!", $pStrUid));
                     throw new AppExceptions\GenericException('APP-DB_NO_DATA_FOUNDED', $lArrParameters);

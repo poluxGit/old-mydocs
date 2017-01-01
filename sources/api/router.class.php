@@ -38,8 +38,8 @@ class Router extends API
         static::setSpecificRoute('GET', '#^document/[0-9A-Za-z\-]*/getmeta/#', 'cb_GET_DocumentGetMeta', 'document');
         static::setSpecificRoute('GET', '#^document/[0-9A-Za-z\-]*/getcat/#', 'cb_GET_DocumentGetCategories', 'document');
         static::setSpecificRoute('GET', '#^document/[0-9A-Za-z\-]*/gettiers/#', 'cb_GET_DocumentGetTiers', 'document');
-        static::setSpecificRoute('POST', '#^document/[0-9A-Za-z\-]*/addtier/[0-9A-Za-z\-]*#', 'cb_POST_DocumentAddTier', 'document');
-        static::setSpecificRoute('POST', '#^document/[0-9A-Za-z\-]*/addcat/[0-9A-Za-z\-]*#', 'cb_POST_DocumentAddCat', 'document');
+        static::setSpecificRoute('POST', '#^document/[0-9A-Za-z\-]*/addtier/[0-9A-Za-z\-]*/#', 'cb_POST_DocumentAddTier', 'document');
+        static::setSpecificRoute('POST', '#^document/[0-9A-Za-z\-]*/addcat/[0-9A-Za-z\-]*/#', 'cb_POST_DocumentAddCat', 'document');
 
         // Getting all Documents !
         //static::setSpecificRoute('GET','#^document/#', 'cb_GET_AllDocuments', 'document');
@@ -47,15 +47,19 @@ class Router extends API
         // Create a new document
         static::setSpecificRoute('POST', '#^document/#', 'cb_POST_CreateDocument', 'document');
 
+
+        // Update an existing Document Object!
+        static::setSpecificRoute('PUT', '#^document/[0-9A-Za-z\-]*/#', 'cb_PUT_UpdateDocument', 'document');
+
         // Documents & Files ...
         static::setSpecificRoute('POST', '#^document/[0-9A-Za-z\-]*/file/#', 'cb_POST_DocumentFileAddFileAndLink', 'document');
-        static::setSpecificRoute('POST', '#^document/[0-9A-Za-z\-]*/file/[0-9A-Za-z\-]*#', 'cb_POST_DocumentAddLink', 'document');
-        static::setSpecificRoute('DELETE', '#^document/[0-9A-Za-z\-]*/file/[0-9A-Za-z\-]*#', 'cb_DELETE_DocumentFileDeleteLink', 'document');
+        static::setSpecificRoute('POST', '#^document/[0-9A-Za-z\-]*/file/[0-9A-Za-z\-]*/#', 'cb_POST_DocumentAddLink', 'document');
+        static::setSpecificRoute('DELETE', '#^document/[0-9A-Za-z\-]*/file/[0-9A-Za-z\-]*/#', 'cb_DELETE_DocumentFileDeleteLink', 'document');
 
         // API TypeDocument relatives Routes
         static::setSpecificRoute('GET', '#^typedocument/[0-9A-Za-z\-]*/getmeta/#', 'cb_GET_TypeDocumentGetMeta', 'document');
-        static::setSpecificRoute('GET', '#^typedocument/[0-9A-Za-z\-]*#', 'cb_GET_TypeDocument', 'document');
-        static::setSpecificRoute('GET', '#^typedocument#', 'cb_GET_AllTypeDocument', 'document');
+        static::setSpecificRoute('GET', '#^typedocument/[0-9A-Za-z\-]*/#', 'cb_GET_TypeDocument', 'document');
+        static::setSpecificRoute('GET', '#^typedocument/#', 'cb_GET_AllTypeDocument', 'document');
 
         // API File relatives Routes
         static::setSpecificRoute('GET', '#^file/[0-9A-Za-z\-]*#', 'cb_GET_getFileContent', 'file');
@@ -71,8 +75,6 @@ class Router extends API
 
         // Generic Tasks routes
         static::setSpecificRoute('GET', '#^tasks/[0-9A-Za-z\-]*#', 'cb_GET_OCRTaskInfo', 'document');
-
-
     }
 
     /**
@@ -133,10 +135,10 @@ class Router extends API
     protected function cb_GET_AllTypeDocument()
     {
         // Getting Data
-      $lStrDocUID = array_shift($this->args);
-      $lObjDoc = new Business\TypeDocument($lStrDocUID);
 
-      return $this->_response($lObjDoc->getAllClassItemsData(), 200);
+        $lObjDoc = new Business\TypeDocument(null);
+
+        return $this->_response($lObjDoc->getAllClassItemsData(), 200);
     }//end cb_GET_TypeDocument()
 
 
@@ -218,8 +220,8 @@ class Router extends API
      */
     protected function cb_POST_CreateOCRTask()
     {
-      $lStrTaksUID = OCRAnalysis::createNewOCRTask();
-      return $this->_response($lStrTaksUID,200);
+        $lStrTaksUID = OCRAnalysis::createNewOCRTask();
+        return $this->_response($lStrTaksUID, 200);
     }//end cb_POST_CreateOCRTask()
 
     /**
@@ -229,23 +231,22 @@ class Router extends API
      *
      * @return string NewOCRTask UID
      */
-    protected function cb_POST_LaunchOCRTask(){
+    protected function cb_POST_LaunchOCRTask()
+    {
+        $lStrtmp = array_shift($this->args);
+        $lStrTaskUID = array_shift($this->args);
+        $lStrFileUID = array_shift($this->args);
 
-      $lStrtmp = array_shift($this->args);
-      $lStrTaskUID = array_shift($this->args);
-      $lStrFileUID = array_shift($this->args);
-
-      try{
-        $lObjTask = new OCRAnalysis();
-        $lBoolLoadOK = $lObjTask->loadTask($lStrTaskUID);
-        $lObjTask->setInputFileUID($lStrFileUID);
-        $lStrResult = $lObjTask->launchOCRAnalysis(true);
-      }catch(\Exception $lObjException)
-      {
-        $lArrResponse = array('error' => $lObjException->getMessage());
-        return $this->_response($lArrResponse,500);
-      }
-      return $this->_responseSpecificType($lStrResult,'text',200);
+        try {
+            $lObjTask = new OCRAnalysis();
+            $lBoolLoadOK = $lObjTask->loadTask($lStrTaskUID);
+            $lObjTask->setInputFileUID($lStrFileUID);
+            $lStrResult = $lObjTask->launchOCRAnalysis(true);
+        } catch (\Exception $lObjException) {
+            $lArrResponse = array('error' => $lObjException->getMessage());
+            return $this->_response($lArrResponse, 500);
+        }
+        return $this->_responseSpecificType($lStrResult, 'text', 200);
     }//end cb_POST_LaunchOCRTask()
 
 
@@ -258,25 +259,24 @@ class Router extends API
      */
     protected function cb_GET_OCRTaskInfo()
     {
-      // Getting URI Data!
+        // Getting URI Data!
       $lStrTaskUID = array_shift($this->args);
 
-      try{
-        $lObjTask = new OCRAnalysis();
-        $lBoolLoadOK = $lObjTask->loadTask($lStrTaskUID);
-        $lArrResult = array(
+        try {
+            $lObjTask = new OCRAnalysis();
+            $lBoolLoadOK = $lObjTask->loadTask($lStrTaskUID);
+            $lArrResult = array(
           'title' => $lObjTask->getTitle(),
           'status'=> $lObjTask->getStatus(),
           'id'=> $lObjTask->getID(),
           'currentstep'=> $lObjTask->getCurrentStep(),
           'stepscount'=> $lObjTask->getStepCount()
         );
-      }catch(\Exception $lObjException)
-      {
-        $lArrResponse = array('error' => $lObjException->getMessage());
-        return $this->_response($lArrResponse,500);
-      }
-      return $this->_response($lArrResult,200);
+        } catch (\Exception $lObjException) {
+            $lArrResponse = array('error' => $lObjException->getMessage());
+            return $this->_response($lArrResponse, 500);
+        }
+        return $this->_response($lArrResult, 200);
     }//end cb_GET_OCRTaskInfo()
 
     /**
@@ -405,6 +405,39 @@ class Router extends API
         // Getting Data
         //$lStrFileID = VaultApp::storeFromContent($this->fileContent,$this->fileName,$this->fileType);
         return $this->_response('PUT Method doesn\'t work to upload file ! Use POST method instead.', 500);
+    }
+
+    protected function cb_PUT_UpdateDocument()
+    {
+        $lStrDocUID = array_shift($this->args);
+
+        $lObjDoc = new Business\Document($lStrDocUID);
+
+        foreach ($this->args as $lStrKey => $lStrValue) {
+            if ($lStrKey != 'metas' && $lStrKey != 'cats' && $lStrKey != 'tiers') {
+                $lObjDoc->setAttributeValue($lStrKey, $lStrValue);
+            } else {
+                if ($lStrKey == 'tiers') {
+                    $lArrTiers = mbsplit(',', $lStrValue);
+                    foreach ($lArrTiers as $lStrTierKey) {
+                        $lObjDoc->addTierToDocument($lStrTierKey);
+                    }
+                } elseif ($lStrKey == 'cats') {
+                    $lArrCats = mbsplit(',', $lStrValue);
+                    foreach ($lArrCats as $lStrCatKey) {
+                        $lObjDoc->addCategorieToDocument($lStrCatKey);
+                    }
+                } elseif ($lStrKey == 'metas') {
+                    // foreach ($lStrValue as $lStrKeyMeta => $lStrMetaValue) {
+                    //     $lObjDoc->setMetaValueForDocument($lStrKeyMeta, $lStrMetaValue);
+                    // }
+                }
+            }
+        }
+
+        $lObjDoc->store();
+
+        return $this->_response($lObjDoc->getId(), 200);
     }
 
     /**

@@ -1,5 +1,4 @@
 composer.lock
-
 dockers/jenkins-home/*
 dockers/logs/apache/
 dockers/logs/php/

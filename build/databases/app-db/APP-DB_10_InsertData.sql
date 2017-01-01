@@ -34,7 +34,7 @@ INSERT INTO app_typesdoc(tdoc_id,tdoc_title,tdoc_code,tdoc_desc) VALUES ('tdoc-f
 INSERT INTO app_typesdoc(tdoc_id,tdoc_title,tdoc_code,tdoc_desc) VALUES ('tdoc-bullpaies','Bulletin de paie','BPAI','Bulletins de salaires.');
 
 /* Meta Type Doc */
-INSERT INTO app_meta_tdoc(meta_id,tdoc_id,meta_title,meta_desc,meta_datatype,meta_pattern,meta_mask) VALUES ('mtdoc-bullpaies-01','tdoc-bullpaies','Montant BRUT','Montant BRUT du Salaire','number','[0-9]* \€','[0-9]* \€');
-INSERT INTO app_meta_tdoc(meta_id,tdoc_id,meta_title,meta_desc,meta_datatype,meta_pattern) VALUES ('mtdoc-bullpaies-02','tdoc-bullpaies','Montant NET','Montant NET du Salaire','number','\€');
+INSERT INTO app_meta_tdoc(meta_id,tdoc_id,meta_title,meta_desc,meta_datatype,meta_pattern,meta_mask) VALUES ('mtdoc-bullpaies-01','tdoc-bullpaies','Montant BRUT','Montant BRUT du Salaire','text','[0-9]* \€','[0-9]* \€');
+INSERT INTO app_meta_tdoc(meta_id,tdoc_id,meta_title,meta_desc,meta_datatype,meta_pattern) VALUES ('mtdoc-bullpaies-02','tdoc-bullpaies','Montant NET','Montant NET du Salaire','text','\€');
 INSERT INTO app_meta_tdoc(meta_id,tdoc_id,meta_title,meta_desc,meta_datatype,meta_pattern) VALUES ('mtdoc-factures-01','tdoc-factures','Date','Date de Facturation.','date','aaaa-mm-dd');
-INSERT INTO app_meta_tdoc(meta_id,tdoc_id,meta_title,meta_desc,meta_datatype,meta_pattern,meta_mask) VALUES ('mtdoc-factures-02','tdoc-factures','Montant T.T.C','Montant de la facture','number','[0-9] \€','[0-9] \€');
+INSERT INTO app_meta_tdoc(meta_id,tdoc_id,meta_title,meta_desc,meta_datatype,meta_pattern,meta_mask) VALUES ('mtdoc-factures-02','tdoc-factures','Montant T.T.C','Montant de la facture','text','[0-9] \€','[0-9] \€');
