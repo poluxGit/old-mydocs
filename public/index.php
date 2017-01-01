@@ -12,7 +12,6 @@ require __DIR__.'/../sources/include-all.php';
 use MyGED\Vault as Vault;
 use MyGED\Application\Application;
 use MyGED\Business\Document;
-
 use MyGED\Process\Engines\ImportFiles;
 
 // Application init!

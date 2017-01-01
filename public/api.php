@@ -7,13 +7,14 @@
  */
 namespace MyGED;
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../sources/include-all.php';
+//require __DIR__ . '/../vendor/autoload.php';
 
-use MyGED\Application\Application;
+//use MyGED\Application\Application;
 use MyGED\API\Router;
 
 // Initialise Application!
-Application::initApplication();
+\MyGED\Application\Application::initApplication();
 
 // Requests from the same server don't have a HTTP_ORIGIN header
 if (!array_key_exists('HTTP_ORIGIN', $_SERVER)) {
