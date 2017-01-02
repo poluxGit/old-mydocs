@@ -62,14 +62,14 @@ class Router extends API
         static::setSpecificRoute('GET', '#^typedocument/#', 'cb_GET_AllTypeDocument', 'document');
 
         // API File relatives Routes
-        static::setSpecificRoute('GET', '#^file/[0-9A-Za-z\-]*#', 'cb_GET_getFileContent', 'file');
+        static::setSpecificRoute('GET', '#^file/[0-9A-Za-z\-]*/#', 'cb_GET_getFileContent', 'file');
         static::setSpecificRoute('GET', '#^file/#', 'cb_GET_getAllFiles', 'file');
         static::setSpecificRoute('POST', '#^file/#', 'cb_POST_NewFile', 'document');
         static::setSpecificRoute('DELETE', '#^file/[0-9A-Za-z\-]*#', 'cb_DELETE_FileIntoDB', 'file');
         //static::setSpecificRoute('PUT', '#^file/#', 'cb_PUT_NewFile', 'document');
 
         // OCR Task management routes
-        static::setSpecificRoute('POST', '#^tasks/ocr/[0-9A-Za-z\-]*/[0-9A-Za-z\-]*#', 'cb_POST_LaunchOCRTask', 'document');
+        static::setSpecificRoute('POST', '#^tasks/ocr/[0-9A-Za-z\-]*/[0-9A-Za-z\-]*/#', 'cb_POST_LaunchOCRTask', 'document');
         static::setSpecificRoute('POST', '#^tasks/ocr/#', 'cb_POST_CreateOCRTask', 'document');
 
 
@@ -239,9 +239,9 @@ class Router extends API
 
         try {
             $lObjTask = new OCRAnalysis();
-            $lBoolLoadOK = $lObjTask->loadTask($lStrTaskUID);
+            $lBoolLoadOK = $lObjTask->loadDB($lStrTaskUID);
             $lObjTask->setInputFileUID($lStrFileUID);
-            $lStrResult = $lObjTask->launchOCRAnalysis(true);
+            $lStrResult = $lObjTask->launchOCRAnalysis(false);
         } catch (\Exception $lObjException) {
             $lArrResponse = array('error' => $lObjException->getMessage());
             return $this->_response($lArrResponse, 500);

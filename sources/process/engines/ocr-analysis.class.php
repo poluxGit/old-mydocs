@@ -218,6 +218,29 @@ class OCRAnalysis extends Task
         return $lObjOCRTask->getId();
     }//end createNewOCRTask()
 
+
+    public function getOCRResultAsText()
+    {
+        $lStrTxtOutputFilePath = $this->getOCRResultOutputTxtFilepath();
+        if (file_exists($lStrTxtOutputFilePath) && filesize($lStrTxtOutputFilePath)>0) {
+            return file_get_contents($lStrTxtOutputFilePath);
+        } else {
+            return null;
+        }
+    }
+
+
+    protected function getOCRResultOutputTxtFilepath()
+    {
+        return Vault::getVaultOCRDirectory().$this->getInputFileUID().'/'.$this->getInputFileUID().'.txt';
+    }
+
+
+    protected function getOCRResultOutputDirectoryPath()
+    {
+        return Vault::getVaultOCRDirectory().$this->getInputFileUID();
+    }
+
     /**
      * Launch OCR Analysis
      *
@@ -245,8 +268,8 @@ class OCRAnalysis extends Task
         $lStrInputFilepath = $this->getInputFilePath();
 
         // Define Output TXT file for OCR Result storage!
-        $lStrOutputTxtFilepath = Vault::getVaultOCRDirectory().$this->getInputFileUID().'/'.$this->getInputFileUID().'.txt';
-        $lStrOutputTxtDirectoryPath = Vault::getVaultOCRDirectory().$this->getInputFileUID();
+        $lStrOutputTxtFilepath = $this->getOCRResultOutputTxtFilepath();
+        $lStrOutputTxtDirectoryPath = $this->getOCRResultOutputDirectoryPath();
 
         if (!file_exists($lStrOutputTxtDirectoryPath)) {
             mkdir($lStrOutputTxtDirectoryPath);
@@ -265,7 +288,7 @@ class OCRAnalysis extends Task
               $this->setCreationTimestamp(time());
               $this->setStartTimeStamp(time());
               $this->setStatus('STARTED');
-              $this->updateTask();
+              $this->store();
 
             // OCR Main Process!
             if (FileSystem::getExtensionFromPath($lStrInputFilepath) == 'pdf') {
@@ -274,7 +297,7 @@ class OCRAnalysis extends Task
                 $this->setCurrentStep(1);
                 $this->setStepCount(count($lArrPDFFileToAnalyze));
                 $this->setStatus('IN PROGRESS');
-                $this->updateTask();
+                $this->store();
 
                 $lArrResult = array();
                 $lbFirst = true;
@@ -308,13 +331,14 @@ class OCRAnalysis extends Task
 
                     $lIntCpt++;
                         $this->setCurrentStep($lIntCpt);
-                        $this->updateTask();
+                        $this->setStatus('IN PROGRESS-'.$lIntCpt);
+                        $this->store();
                     }
                 }//end foreach
 
               $this->setStatus('FINISHED');
                 $this->setEndTimesTamp(time());
-                $this->updateTask();
+                $this->store();
                 return $lStrOcrResult;
             } else {
                 throw new ApplicationException(
@@ -341,8 +365,14 @@ class OCRAnalysis extends Task
         }
     }//end launchOCRAnalysis()
 
+
+
+
     // INHERITED METHODS
     // =========================================================================
+
+
+
 
     /**
      * Returns a string with json encode specific param

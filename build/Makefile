@@ -19,21 +19,21 @@ gendb-app:
 	@echo "";
 	@echo "* Generating SQLite3 Database for Application.";
 	@echo "------------------------------------------------";
-	-sqlite3 app.db < ./databases/app-db/APP-DB_01_CreateTables.sql
-	-sqlite3 app.db < ./databases/app-db/APP-DB_10_InsertData.sql
+	-sqlite3 ./databases/app.db < ./databases/app-db/APP-DB_01_CreateTables.sql
+	-sqlite3 ./databases/app.db < ./databases/app-db/APP-DB_10_InsertData.sql
 
 gendb-vault:
 	@echo "* Generating SQLite3 Database for Vault.";
 	@echo "------------------------------------------------";
-	-sqlite3 vault.db < ./databases/vault-db/VLT-DB_01_CreateTables.sql
+	-sqlite3 ./databases/vault.db < ./databases/vault-db/VLT-DB_01_CreateTables.sql
 
 deploy: gendb
 	@echo "";
 	@echo "* Deploying databases files generated.";
 	@echo "------------------------------------------------";
-	-cp ./app.db ./../data/app_db/app.db
+	-cp ./databases/app.db ./../data/app_db/app.db
 	@echo "* ApplicationDB file deployed successfully!";
-	-cp ./vault.db ./../data/app_vault/db/vault.db
+	-cp ./databases/vault.db ./../data/app_vault/db/vault.db
 	@echo "* VaultDB file deployed successfully!";
 
 cleanfiles:
@@ -48,5 +48,5 @@ clean: begin
 	@echo "";
 	@echo "* Cleaning existing .db files!"
 	@echo "------------------------------------------------";
-	@rm -f ./*.db
+	@rm -f ./databases/*.db
 	@echo "-> Cleaning done!"

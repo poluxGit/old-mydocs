@@ -4,6 +4,6 @@
     "vault_path"      : "data/app_vault/",
     "vault_db"        : "data/app_db/app.db",
     "vault_ocr"       : "data/app_vault/ocr-analysis/",
-    "templates_path"  : "build/"
+    "templates_path"  : "build/databases/"
   }
 }

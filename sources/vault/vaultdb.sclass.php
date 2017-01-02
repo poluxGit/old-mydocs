@@ -34,6 +34,10 @@ class VaultDb
     {
         try {
             $lObjDb = Vault::getPDOVaultDBObject();
+            $lStrMime = $pStrFileMime;
+            if (empty($pStrFileMime)) {
+                $lStrMime = mime_content_type($pStrTargetFilename);
+            }
 
             $lStrSQLQuery = sprintf(
                     "INSERT INTO vault_files VALUES ('%s','%s','%s',%d,'%s');",
@@ -41,7 +45,7 @@ class VaultDb
                     $pStrTargetFilename,
                     $pStrSourceFilename,
                     filesize($pStrTargetFilename),
-                    $pStrFileMime
+                    $lStrMime
             );
 
             $lObjDb->query($lStrSQLQuery);

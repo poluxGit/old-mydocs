@@ -84,11 +84,11 @@ class FileSystem
      *
      * @link http://php.net/manual/fr/function.pathinfo.php
      * @param string $pStrFilepath Filepath
-     * @return string File extension
+     * @return string File extension (lower case)
      */
     public static function getExtensionFromPath($pStrFilepath)
     {
-        return pathinfo($pStrFilepath, PATHINFO_EXTENSION);
+        return strtolower(pathinfo($pStrFilepath, PATHINFO_EXTENSION));
     }//end getExtensionFromPath()
 
     /**

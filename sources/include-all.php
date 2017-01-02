@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__.'/../vendor/autoload.php';
+
 require __DIR__.'/application/application.class.php';
 
 require __DIR__.'/core/api/api-router.aclass.php';
@@ -31,4 +33,5 @@ require __DIR__.'/core/filesystem/pdfhandler.class.php';
 
 require __DIR__.'/core/tasks/task.class.php';
 
+require __DIR__.'/process/engines/ocr-analysis.class.php';
 require __DIR__.'/process/engines/import-files.class.php';
